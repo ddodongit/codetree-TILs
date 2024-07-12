@@ -50,28 +50,25 @@ public class Main {
         int sum = 0;
         if(col == 0){
             sum = map[row][col] + map[row][col+1] + map[row+1][col] + map[row+1][col+1];
-
-            for(int r= row; r<= row+1; r++){
-                for(int c= col; c<=col+1; c++){
-                    sum -= map[r][c];
-                    max_total = Integer.max(sum, max_total);
-                    sum += map[r][c];
-                }
-            }
-            return map[row][col+1] + map[row+1][col+1];
         }
         else{
             sum = beforeSum;
-
-            
-            sum -= map[row][col-1] + map[row+1][col-1];
             sum += map[row][col+1] + map[row+1][col+1];    
         }
 
 
 
+        for(int r= row; r<= row+1; r++){
+            for(int c= col; c<=col+1; c++){
+                sum -= map[r][c];
+                max_total = Integer.max(sum, max_total);
+                sum += map[r][c];
+            }
+        }
+        return map[row][col+1] + map[row+1][col+1];
+
        
-        return sum;
+        // return sum;
 
     }
 
