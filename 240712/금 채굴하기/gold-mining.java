@@ -64,16 +64,16 @@ public class Main {
         while(!queue.isEmpty()){
             Point now = queue.poll();
             totalCost = getCost(now.dist);
-            if(totalCost < m*count) {
-                    // System.out.println(totalCost+" "+ (m*count)+" count: "+count);
-                    maxCount = Integer.max(maxCount, count);
-            }
             if(!isVisited[now.i][now.j] && map[now.i][now.j]==1){
+                count += 1;
                 // System.out.println("get: " + now);
                 // System.out.println("cost: "+ totalCost+" m*count: "+ (m*count));
 
-                count += 1;
                 // System.out.println("count: "+ count);
+            }
+            if(totalCost < m*count) {
+                // System.out.println(totalCost+" "+ (m*count)+" count: "+count);
+                maxCount = Integer.max(maxCount, count);
             }
             isVisited[now.i][now.j]= true;
 
