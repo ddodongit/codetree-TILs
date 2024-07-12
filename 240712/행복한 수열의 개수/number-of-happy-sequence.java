@@ -24,6 +24,7 @@ public class Main {
 
         int r_count=0;
         for(int i=0; i<n; i++){
+            boolean flag = true;
             for(int j=0; j<n; j++){
                 int count = 1;
                 int k=j+1;
@@ -34,15 +35,16 @@ public class Main {
                     count++;
                 }
                 if(count>=m){
-                    r_count += 1;
+                    flag= true;
                     j+=count;
                 }
-
             }
+            if(flag) r_count += 1;
         }   
 
         int c_count=0;
         for(int i=0; i<n; i++){
+            boolean flag = true;
             for(int j=0; j<n; j++){
                 int count = 1;
                 int k=j+1;
@@ -53,12 +55,12 @@ public class Main {
                     count++;
                 }
                 if(count>=m){
-                    c_count += 1;
+                    flag = true;
                     j+=count;
                 }
-
             }
+                if(flag) c_count += 1;
         }   
-        System.out.println(r_count + c_count);
+        System.out.println(r_count+c_count);
     }
 }
