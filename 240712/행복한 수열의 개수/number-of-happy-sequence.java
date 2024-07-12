@@ -24,7 +24,7 @@ public class Main {
 
         int r_count=0;
         for(int i=0; i<n; i++){
-            boolean flag = true;
+            boolean flag = false;
             for(int j=0; j<n; j++){
                 int count = 1;
                 int k=j+1;
@@ -44,7 +44,7 @@ public class Main {
 
         int c_count=0;
         for(int i=0; i<n; i++){
-            boolean flag = true;
+            boolean flag = false;
             for(int j=0; j<n; j++){
                 int count = 1;
                 int k=j+1;
@@ -59,7 +59,7 @@ public class Main {
                     j+=count;
                 }
             }
-                if(flag) c_count += 1;
+            if(flag) c_count += 1;
         }   
         System.out.println(r_count+c_count);
     }
