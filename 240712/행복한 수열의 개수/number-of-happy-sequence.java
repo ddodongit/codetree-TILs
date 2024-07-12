@@ -20,28 +20,45 @@ public class Main {
                 map[i][j] = Integer.parseInt(st.nextToken());
             }
         }
-      
-        int count = 0;
+
+
+        int r_count=0;
         for(int i=0; i<n; i++){
-            HashMap<Integer, Integer> r_count = new HashMap();
-            HashMap<Integer, Integer> c_count = new HashMap();
-            
             for(int j=0; j<n; j++){
-                if(r_count.containsKey(map[i][j])) r_count.replace(map[i][j], r_count.get(map[i][j])+1);
-                else r_count.put(map[i][j],1);
-
-                if(c_count.containsKey(map[i][j])) c_count.replace(map[i][j], c_count.get(map[i][j])+1);
-                else c_count.put(map[i][j],1);
+                int count = 1;
+                int k=j+1;
+                for(k=j+1; k<n; k++){
+                    if(map[i][j]!= map[i][k]){
+                        break;
+                    }
+                    count++;
+                }
+                if(count>=m){
+                    r_count += 1;
+                    j+=count;
+                }
 
             }
-            for(Integer value : r_count.values()){
-                if(value == m) count++;
-            }
-            for(Integer value : c_count.values()){
-                if(value == m) count++;
-            }
-        }
+        }   
 
-        System.out.println(count);
+        int c_count=0;
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                int count = 1;
+                int k=j+1;
+                for(k=j+1; k<n; k++){
+                    if(map[j][i]!= map[k][i]){
+                        break;
+                    }
+                    count++;
+                }
+                if(count>=m){
+                    c_count += 1;
+                    j+=count;
+                }
+
+            }
+        }   
+        System.out.println(r_count + c_count);
     }
 }
