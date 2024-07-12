@@ -55,7 +55,7 @@ public class Main {
 
 
     static void bfs(int start_i, int start_j){
-        Queue<Point> queue = new ArrayDeque();
+        Queue<Point> queue = new LinkedList();
         boolean[][] isVisited = new boolean[n][n];
         int totalCost = 0;
         int count = 0;
