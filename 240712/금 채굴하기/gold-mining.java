@@ -4,6 +4,7 @@ import java.io.*;
 public class Main {
     static int n,m,map[][], minCost= Integer.MAX_VALUE, maxCount = Integer.MIN_VALUE, goldCnt;
     static int[] di = {-1,0,1,0}, dj={0,1,0,-1};
+    static ArrayList<Point> golds;
 
     
     static class Point{
@@ -31,74 +32,55 @@ public class Main {
         m = Integer.parseInt(st.nextToken());
 
         map = new int[n][n];
-
-        goldCnt = 0;
+        golds = new ArrayList();
         for(int i=0; i<n; i++){
             st = new StringTokenizer(br.readLine());
             for(int j=0; j<n; j++){
                 map[i][j] = Integer.parseInt(st.nextToken());
-                if(map[i][j] ==1) goldCnt++;
+                if(map[i][j] ==1) {
+                    golds.add(new Point(i,j,0));
+                }
             }
         }
 
 
         for(int i=0; i<n; i++){
             for(int j=0; j<n; j++){
-                // System.out.println("start i : "+ i +" start j :" +j);
-                bfs(i,j);
-                // System.out.println();
+                calDist(i,j);
             }
         }
 
         System.out.println(maxCount == Integer.MIN_VALUE ? 0: maxCount);
     }
 
-
-    static void bfs(int start_i, int start_j){
-        Queue<Point> queue = new LinkedList();
-        boolean[][] isVisited = new boolean[n][n];
-        int totalCost = 0;
-        int count = 0;
-
-
-        queue.add(new Point(start_i, start_j, 0));
-
-
-        while(!queue.isEmpty()){
-            Point now = queue.poll();
-            
-            if(!isVisited[now.i][now.j] && map[now.i][now.j]==1){
-                count += 1;
-                // System.out.println("get: " + now);
-                // System.out.println("cost: "+ totalCost+" m*count: "+ (m*count));
-                totalCost = getCost(now.dist);
-                if(totalCost <= m*count) {
-                    // System.out.println(totalCost+" "+ (m*count)+" count: "+count);
-                    maxCount = Integer.max(maxCount, count);
-                    if (goldCnt == count){
-                        queue.clear();
-                        return;
-                    } 
-                }
+    static void calDist(int start_i, int start_j){
+        PriorityQueue<Point> pq = new PriorityQueue(new Comparator<Point>(){
+            @Override
+            public int compare(Point p1, Point p2){
+                return p1.dist-p2.dist;
             }
-            isVisited[now.i][now.j]= true;
-            
+        });
 
-            for(int d=0; d<4; d++){
-                int next_i = now.i+di[d];
-                int next_j = now.j+dj[d];
 
-                if(isOutOfBounds(next_i, next_j)) continue;
-                if(isVisited[next_i][next_j]) continue;
-
-                queue.add(new Point(next_i, next_j, now.dist+1));
-
-            }
+        for(int index=0; index<golds.size(); index++){
+            Point now_gold = golds.get(index);
+            int dist = Math.abs(start_i - now_gold.i)+Math.abs(start_j - now_gold.j);
+            now_gold.dist = dist;
+            pq.add(now_gold);
         }
 
-     
+        int totalCost = 0;
+        int count = 0;
+        while(!pq.isEmpty()){
+            Point gold = pq.poll();   
+            count++;
+            totalCost = getCost(gold.dist);
+         
+            if(totalCost <= m*count) {
+                maxCount = Integer.max(maxCount, count);
+            }
+        }
     }
-
 
     static int getCost(int K){
         return (K*K) + (K+1)*(K+1);
