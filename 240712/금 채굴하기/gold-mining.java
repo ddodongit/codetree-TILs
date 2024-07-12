@@ -47,7 +47,7 @@ public class Main {
             }
         }
 
-        System.out.println(maxCount == Integer.MIN_VALUE ? 0: maxCount );
+        System.out.println(maxCount == Integer.MIN_VALUE ? 0: maxCount);
     }
 
 
@@ -74,6 +74,7 @@ public class Main {
             if(totalCost <= m*count) {
                 // System.out.println(totalCost+" "+ (m*count)+" count: "+count);
                 maxCount = Integer.max(maxCount, count);
+                return;
             }
             isVisited[now.i][now.j]= true;
 
