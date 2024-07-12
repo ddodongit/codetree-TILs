@@ -71,7 +71,7 @@ public class Main {
 
                 // System.out.println("count: "+ count);
             }
-            if(totalCost < m*count) {
+            if(totalCost <= m*count) {
                 // System.out.println(totalCost+" "+ (m*count)+" count: "+count);
                 maxCount = Integer.max(maxCount, count);
             }
