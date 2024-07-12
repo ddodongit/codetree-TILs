@@ -47,7 +47,7 @@ public class Main {
             }
         }
 
-        System.out.println(maxCount);
+        System.out.println(maxCount == Integer.MIN_VALUE ? 0: maxCount );
     }
 
 
