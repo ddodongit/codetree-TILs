@@ -4,6 +4,7 @@ import java.io.*;
 public class Main {
     static int n,m,map[][], minCost= Integer.MAX_VALUE, maxCount = Integer.MIN_VALUE, goldCnt;
     static int[] di = {-1,0,1,0}, dj={0,1,0,-1};
+
     
     static class Point{
 
@@ -40,7 +41,7 @@ public class Main {
             }
         }
 
-        // bfs(3,3);
+
         for(int i=0; i<n; i++){
             for(int j=0; j<n; j++){
                 // System.out.println("start i : "+ i +" start j :" +j);
@@ -65,18 +66,19 @@ public class Main {
 
         while(!queue.isEmpty()){
             Point now = queue.poll();
-            totalCost = getCost(now.dist);
+            
             if(!isVisited[now.i][now.j] && map[now.i][now.j]==1){
                 count += 1;
                 // System.out.println("get: " + now);
                 // System.out.println("cost: "+ totalCost+" m*count: "+ (m*count));
+                totalCost = getCost(now.dist);
                 if(totalCost <= m*count) {
                     // System.out.println(totalCost+" "+ (m*count)+" count: "+count);
                     maxCount = Integer.max(maxCount, count);
-                    if (goldCnt == count) return;
-                    // int remains = goldCnt-cnt;
-                    // if()
-                
+                    if (goldCnt == count){
+                        queue.clear();
+                        return;
+                    } 
                 }
             }
             isVisited[now.i][now.j]= true;
