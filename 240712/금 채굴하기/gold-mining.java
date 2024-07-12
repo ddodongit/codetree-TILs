@@ -2,7 +2,7 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-    static int n,m,map[][], minCost= Integer.MAX_VALUE, maxCount = Integer.MIN_VALUE;
+    static int n,m,map[][], minCost= Integer.MAX_VALUE, maxCount = Integer.MIN_VALUE, goldCnt;
     static int[] di = {-1,0,1,0}, dj={0,1,0,-1};
     
     static class Point{
@@ -31,10 +31,12 @@ public class Main {
 
         map = new int[n][n];
 
+        goldCnt = 0;
         for(int i=0; i<n; i++){
             st = new StringTokenizer(br.readLine());
             for(int j=0; j<n; j++){
                 map[i][j] = Integer.parseInt(st.nextToken());
+                if(map[i][j] ==1) goldCnt++;
             }
         }
 
@@ -68,16 +70,17 @@ public class Main {
                 count += 1;
                 // System.out.println("get: " + now);
                 // System.out.println("cost: "+ totalCost+" m*count: "+ (m*count));
-
-                // System.out.println("count: "+ count);
-            }
-            if(totalCost <= m*count) {
-                // System.out.println(totalCost+" "+ (m*count)+" count: "+count);
-                maxCount = Integer.max(maxCount, count);
-                return;
+                if(totalCost <= m*count) {
+                    // System.out.println(totalCost+" "+ (m*count)+" count: "+count);
+                    maxCount = Integer.max(maxCount, count);
+                    if (goldCnt == count) return;
+                    // int remains = goldCnt-cnt;
+                    // if()
+                
+                }
             }
             isVisited[now.i][now.j]= true;
-
+            
 
             for(int d=0; d<4; d++){
                 int next_i = now.i+di[d];
