@@ -35,7 +35,7 @@ public class Main {
             }
         }
 
-        System.out.println(maxArea);
+        System.out.println(maxArea == Integer.MIN_VALUE ? -1 : maxArea);
     }
 
     static int findSquare(int start_i, int start_j){
