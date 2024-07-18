@@ -27,10 +27,10 @@ public class Main {
         for(int i=0; i<n; i++){
             for(int j=0; j<m; j++){
                 if(map[i][j] > 0){
-                    // System.out.println("start : "+ i +" "+j);
+                    // System.out.println("start : "+ i + " "+j);
                     int area = findSquare(i,j);
+                    // System.out.println("area: "+ area);
                     maxArea = Integer.max(area, maxArea);
-                    // System.out.println("area : "+ area);
                 }
             }
         }
@@ -40,9 +40,7 @@ public class Main {
 
     static int findSquare(int start_i, int start_j){
 
-        // int rowSize = 0;
         int colSize = 0;
-
 
         for(int j=start_j; j<m ;j++) {
             if(map[start_i][j] < 0) {
@@ -53,14 +51,22 @@ public class Main {
 
 
         int maxColSize = colSize-1;
-        
+        int s = maxColSize;
         for(int i=start_i+1; i<n; i++){
-            for(int s=maxColSize; s>=0; s--){
+            for(s=maxColSize; s>=0; s--){
                 if(map[i][start_j+s] < 0) {
                     colSize--;
                     int rowSize = i - start_i;
                     int area = (colSize+1)*rowSize;
                     // System.out.println("return : "+colSize+ " "+ rowSize);
+                    // return;
+                }
+                if(map[i][s]>0) {
+                    // System.out.println(map[i][start_j+s]+" ");
+                    int rowSize = i - start_i+1;
+                    // System.out.println(rowSize + " "+i);
+                    int area = colSize*rowSize;
+                    // System.out.println("return : "+colSize+ " "+ rowSize); 
                     return area;
                 }
                 // System.out.println(map[i][start_j+s]+" ");
