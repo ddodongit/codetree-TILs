@@ -25,7 +25,7 @@ public class Main {
         
  
         maxArea = Integer.MIN_VALUE;
-        // findSquare(0,0);
+        // int maxArea = findSquare(0,0);
         for(int i=0; i<n; i++){
             for(int j=0; j<m; j++){
                 if(map[i][j] > 0){
@@ -66,6 +66,7 @@ public class Main {
             colSize++;
         }
 
+        area = colSize;
         // System.out.println("area: " +colSize);
         // down
         boolean flag = false;
@@ -74,7 +75,7 @@ public class Main {
             for(j=start_j; j<start_j+colSize; j++){
                 if(map[i][j]<0){
                     flag = true;
-                    // area = rowSize*colSize;
+                    area = Integer.max(area,rowSize*colSize);
                     colSize--;
                     // System.out.println("rowsize : "+rowSize + " colsize: "+colSize);   
                     // System.out.println("area: "+area);   
@@ -86,7 +87,7 @@ public class Main {
             }
             if(j==start_j+colSize){
                 rowSize++;
-                area = rowSize*colSize;
+                area = Integer.max(area,rowSize*colSize);
             }
         }
 
