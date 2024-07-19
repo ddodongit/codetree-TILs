@@ -67,7 +67,7 @@ public class Main {
         }
 
         area = colSize;
-        // System.out.println("area: " +colSize);
+        // System.out.println("1. area: " +colSize);
         // down
         boolean flag = false;
         for(int i=start_i+1; i<n; i++){
@@ -78,7 +78,7 @@ public class Main {
                     area = Integer.max(area,rowSize*colSize);
                     colSize--;
                     // System.out.println("rowsize : "+rowSize + " colsize: "+colSize);   
-                    // System.out.println("area: "+area);   
+                    // System.out.println("2. area: "+area);   
                     // System.out.println("minus: "+i+ " "+j);   
                     break;
                 }
@@ -86,14 +86,20 @@ public class Main {
                 // System.out.println(map[i][j]);
             }
             if(j==start_j+colSize){
-                rowSize++;
                 area = Integer.max(area,rowSize*colSize);
+                rowSize++;
+            }
+            if(i==n-1 && j==start_j+colSize){
+                // System.out.println("!!!");
+                area = Integer.max(area,rowSize*colSize);
+                // rowSize++;
+
             }
         }
 
 
 
-        // System.out.println("area : "+area);
+        // System.out.println("3. area : "+area);
         return area;
     }
 
