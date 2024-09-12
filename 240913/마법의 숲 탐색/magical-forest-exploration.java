@@ -35,6 +35,7 @@ public class Main {
             angel_i = -1;
             angel_j = center;
             exit_dir = dir;
+            move_dir = DOWN;
             enter(i);
         }
 
@@ -44,14 +45,13 @@ public class Main {
 
     static void enter(int idx) {
 
-        move_dir = DOWN;
 
         while (true) {
             boolean result = move_golem();
-            if (angel_i + 1 == R) {
+            if (!result && move_dir == -1) {
                 break;
             }
-            if (!result && move_dir == -1) {
+            if (angel_i + 1 == R) {
                 break;
             }
 
@@ -86,7 +86,7 @@ public class Main {
             int exit_i = queue.poll();
             int exit_j = queue.poll();
 
-            for (int d = 1; d < 4; d++) {
+            for (int d = 0; d < 4; d++) {
                 int next_i = exit_i + di[d];
                 int next_j = exit_j + dj[d];
 
@@ -99,9 +99,6 @@ public class Main {
                     continue;
                 }
                 if (nextIdx == 0) {
-                    continue;
-                }
-                if (idx == nextIdx) {
                     continue;
                 }
 
@@ -195,14 +192,11 @@ public class Main {
 
         for (int d = -1; d <= 1; d++) {
             if (center_i + di[(move_dir + d + 4) % 4] >= 0
-                && map[center_i + di[(move_dir + d + 4) % 4]][center_j + dj[(move_dir + d + 4) % 4]]
-                != 0) {
+                && map[center_i + di[(move_dir + d + 4) % 4]][center_j + dj[(move_dir + d + 4) % 4]] != 0) {
                 return false;
             }
 
-        }
-
-//    
+        }    
 
         return true;
     }
