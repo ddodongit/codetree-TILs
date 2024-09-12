@@ -8,11 +8,11 @@ import java.util.StringTokenizer;
 public class Main {
 
     static final int UP = 0, RIGHT = 1, DOWN = 2, LEFT = 3;
-    static int[] di = {-1, 0, 1, 0}, dj = {0, 1, 0, -1};
-    static int R, C, K, map[][], total;
+    static final int[] di = {-1, 0, 1, 0}, dj = {0, 1, 0, -1};
+    static int R, C, K, total;
     static int angel_i, angel_j, move_dir, exit_dir;
+    static int[][] map;
     static HashMap<Integer, int[]> posCenterMap;
-
 
     public static void main(String[] args) throws Exception {
 
@@ -25,7 +25,7 @@ public class Main {
         K = Integer.parseInt(st.nextToken());
 
         map = new int[R + 1][C + 1];
-        posCenterMap = new HashMap();
+        posCenterMap = new HashMap<>();
 
         for (int i = 1; i <= K; i++) {
             st = new StringTokenizer(br.readLine());
@@ -41,7 +41,6 @@ public class Main {
         System.out.println(total);
 
     }
-
 
     static void enter(int idx) {
 
@@ -61,7 +60,7 @@ public class Main {
         // init forest
         if (angel_i - 1 < 1) {
             map = new int[R + 1][C + 1];
-            posCenterMap = new HashMap();
+            posCenterMap = new HashMap<>();
             return;
         }
 
@@ -76,7 +75,7 @@ public class Main {
 
         int maxRow = angel_i + 1;
 
-        Queue<Integer> queue = new ArrayDeque();
+        Queue<Integer> queue = new ArrayDeque<>();
         boolean[] visited = new boolean[K + 1];
         visited[idx] = true;
 
@@ -102,7 +101,7 @@ public class Main {
                 if (nextIdx == 0) {
                     continue;
                 }
-                if (Math.abs(idx) == Math.abs(nextIdx)) {
+                if (idx == nextIdx) {
                     continue;
                 }
 
@@ -154,14 +153,9 @@ public class Main {
 
                 // change exit_dir
                 if (move_dir == LEFT) {
-                    exit_dir = exit_dir - 1;
+                    exit_dir = (exit_dir + 3) % 4;
                 } else if (move_dir == RIGHT) {
-                    exit_dir = exit_dir + 1;
-                }
-                if (exit_dir < 0) {
-                    exit_dir = 3;
-                } else if (exit_dir > 3) {
-                    exit_dir = 0;
+                    exit_dir = (exit_dir + 1) % 4;
                 }
 
                 angel_i = angel_i + di[move_dir];
@@ -195,50 +189,20 @@ public class Main {
         center_i = center_i + di[move_dir];
         center_j = center_j + dj[move_dir];
 
-        // green check
-        switch (move_dir) {
-            case DOWN:
-                if (isOutOfBounds(center_i + di[DOWN], center_j + dj[DOWN])) {
-                    return false;
-                }
-
-                if ((center_i + di[DOWN] >= 0 && map[center_i + di[DOWN]][center_j + dj[DOWN]] != 0)
-                    || (center_i + di[LEFT] >= 0
-                    && map[center_i + di[LEFT]][center_j + dj[LEFT]] != 0)
-                    || (center_i + di[RIGHT] >= 0
-                    && map[center_i + di[RIGHT]][center_j + dj[RIGHT]] != 0)) {
-                    return false;
-                }
-
-                break;
-            case LEFT:
-
-                if (isOutOfBounds(center_i + di[LEFT], center_j + dj[LEFT])) {
-                    return false;
-                }
-
-                if ((center_i + di[LEFT] >= 0 && map[center_i + di[LEFT]][center_j + dj[LEFT]] != 0)
-                    || (center_i + di[DOWN] >= 0
-                    && map[center_i + di[DOWN]][center_j + dj[DOWN]] != 0)
-                    || (center_i + di[UP] >= 0 && map[center_i + di[UP]][center_j + dj[UP]] != 0)) {
-                    return false;
-                }
-
-                break;
-            case RIGHT:
-                if (isOutOfBounds(center_i + di[RIGHT], center_j + dj[RIGHT])) {
-                    return false;
-                }
-
-                if ((center_i + di[UP] >= 0 && map[center_i + di[UP]][center_j + dj[UP]] != 0)
-                    || (center_i + di[DOWN] >= 0
-                    && map[center_i + di[DOWN]][center_j + dj[DOWN]] != 0)
-                    || (center_i + di[RIGHT] >= 0
-                    && map[center_i + di[RIGHT]][center_j + dj[RIGHT]] != 0)) {
-                    return false;
-                }
-                break;
+        if (isOutOfBounds(center_i + di[move_dir], center_j + dj[move_dir])) {
+            return false;
         }
+
+        for (int d = -1; d <= 1; d++) {
+            if (center_i + di[(move_dir + d + 4) % 4] >= 0
+                && map[center_i + di[(move_dir + d + 4) % 4]][center_j + dj[(move_dir + d + 4) % 4]]
+                != 0) {
+                return false;
+            }
+
+        }
+
+//    
 
         return true;
     }
