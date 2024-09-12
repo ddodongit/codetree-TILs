@@ -164,11 +164,16 @@ public class Main {
                     }
                     return false;
                 }
-                // change exit_dir
+                      // change exit_dir
                 if (move_dir == LEFT) {
-                    exit_dir = (exit_dir - 1) % 4;
+                    exit_dir = exit_dir - 1;
                 } else if (move_dir == RIGHT) {
-                    exit_dir = (exit_dir + 1) % 4;
+                    exit_dir = exit_dir + 1;
+                }
+                if (exit_dir < 0) {
+                    exit_dir = 3;
+                } else if (exit_dir > 3) {
+                    exit_dir = 0;
                 }
 
                 angel_i = angel_i + di[move_dir];
