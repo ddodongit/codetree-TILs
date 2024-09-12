@@ -41,6 +41,8 @@ public class Main {
         System.out.println(total);
 
     }
+
+
     static void enter(int idx) {
 
         move_dir = DOWN;
@@ -200,9 +202,11 @@ public class Main {
                     return false;
                 }
 
-                if (map[center_i + di[DOWN]][center_j + dj[DOWN]] != 0
-                    || map[center_i + di[LEFT]][center_j + dj[LEFT]] != 0
-                    || map[center_i + di[RIGHT]][center_j + dj[RIGHT]] != 0) {
+                if ((center_i + di[DOWN] >= 0 && map[center_i + di[DOWN]][center_j + dj[DOWN]] != 0)
+                    || (center_i + di[LEFT] >= 0
+                    && map[center_i + di[LEFT]][center_j + dj[LEFT]] != 0)
+                    || (center_i + di[RIGHT] >= 0
+                    && map[center_i + di[RIGHT]][center_j + dj[RIGHT]] != 0)) {
                     return false;
                 }
 
@@ -213,8 +217,9 @@ public class Main {
                     return false;
                 }
 
-                if (map[center_i + di[LEFT]][center_j + dj[LEFT]] != 0
-                    || map[center_i + di[DOWN]][center_j + dj[DOWN]] != 0
+                if ((center_i + di[LEFT] >= 0 && map[center_i + di[LEFT]][center_j + dj[LEFT]] != 0)
+                    || (center_i + di[DOWN] >= 0
+                    && map[center_i + di[DOWN]][center_j + dj[DOWN]] != 0)
                     || (center_i + di[UP] >= 0 && map[center_i + di[UP]][center_j + dj[UP]] != 0)) {
                     return false;
                 }
@@ -226,8 +231,10 @@ public class Main {
                 }
 
                 if ((center_i + di[UP] >= 0 && map[center_i + di[UP]][center_j + dj[UP]] != 0)
-                    || map[center_i + di[DOWN]][center_j + dj[DOWN]] != 0
-                    || map[center_i + di[RIGHT]][center_j + dj[RIGHT]] != 0) {
+                    || (center_i + di[DOWN] >= 0
+                    && map[center_i + di[DOWN]][center_j + dj[DOWN]] != 0)
+                    || (center_i + di[RIGHT] >= 0
+                    && map[center_i + di[RIGHT]][center_j + dj[RIGHT]] != 0)) {
                     return false;
                 }
                 break;
@@ -250,7 +257,7 @@ public class Main {
     }
 
     static boolean isOutOfBounds(int i, int j) {
-        return i < 0 || i > R || j < 1 || j > C;
+        return i < -1 || i > R || j < 1 || j > C;
     }
 
 }
