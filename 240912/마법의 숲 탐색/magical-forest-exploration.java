@@ -115,7 +115,7 @@ public class Main {
                 if (nextIdx == 0) {
                     continue;
                 }
-                if (Math.abs(idx) == Math.abs(nextIdx)) {
+                if (idx == nextIdx) {
                     continue;
                 }
 
