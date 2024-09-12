@@ -108,7 +108,7 @@ public class Main {
                     continue;
                 }
 
-                int nextIdx = map[next_i][next_j];
+                int nextIdx = Math.abs(map[next_i][next_j]);
                 if (visited[nextIdx]) {
                     continue;
                 }
