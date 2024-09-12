@@ -72,7 +72,7 @@ public class Main {
         }
 
         // init forest
-        if (angel_i < 1) {
+        if (angel_i-1 < 1) {
             map = new int[R + 1][C + 1];
             posCenterMap = new HashMap();
             return;
