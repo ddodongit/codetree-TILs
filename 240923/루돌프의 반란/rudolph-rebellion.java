@@ -101,7 +101,6 @@ public class Main {
 
     }
 
-
     private static void moveRudolph(int dir) {
 
         if (map[rudolph.r + dr_8[dir]][rudolph.c + dc_8[dir]] != EMPTY) { // collision
@@ -116,7 +115,6 @@ public class Main {
         map[rudolph.r][rudolph.c] = RUDOLPH;
 
         moveAllSanta();
-
 
     }
 
@@ -138,6 +136,9 @@ public class Main {
 
             int dir = getSantaDirection(santa, rudolph, i);
 
+            if (dir == 0) {
+                continue;
+            }
             if (map[santa.r + dr_4[dir]][santa.c + dc_4[dir]] != EMPTY) { // collision
                 collide(santa.r, santa.c, santa.r + dr_4[dir], santa.c + dc_4[dir], dir);
             } else {
@@ -149,7 +150,6 @@ public class Main {
                 map[santa.r][santa.c] = i;
 
             }
-
 
         }
     }
@@ -286,16 +286,19 @@ public class Main {
         int minDist = Integer.MAX_VALUE;
         int dir = 0;
 
-        for (int d = 1; d <= 4; d++) {
+        for (int d = 0; d <= 4; d++) {
             int nextR = santa.r + dr_4[d];
             int nextC = santa.c + dc_4[d];
 
             if (isOutOfBounds(nextR, nextC)) {
                 continue;
             }
-            if (map[nextR][nextC] >= 1 && map[nextR][nextC] <= P) {
+
+            int idx = map[nextR][nextC];
+            if (idx >= 1 && idx <= P && sId != idx) {
                 continue;
             }
+
             int dist = getDist(rudolph.r, rudolph.c, nextR, nextC);
             if (minDist > dist) {
                 minDist = dist;
@@ -312,30 +315,13 @@ public class Main {
         return (int) (Math.pow(from_r - to_r, 2) + Math.pow(from_c - to_c, 2));
     }
 
-    static class Point implements Comparable<Point> {
+    static class Point {
 
         int r, c;
 
         public Point(int r, int c) {
             this.r = r;
             this.c = c;
-        }
-
-        @Override
-        public int compareTo(Point o) {
-            if (this.r == o.r) {
-                return Integer.compare(o.c, this.c);
-            } else {
-                return Integer.compare(o.r, this.r);
-            }
-        }
-
-        @Override
-        public String toString() {
-            return "Point{" +
-                "r=" + r +
-                ", c=" + c +
-                '}';
         }
     }
 }
