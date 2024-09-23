@@ -249,14 +249,12 @@ public class Main {
 
     private static int getNearParticipant() {
 
-        int minDist = Integer.MAX_VALUE;
         Point minP = new Point(0, 0);
         int result = 0;
-        int minSize = 0;
+        int minSize = Integer.MAX_VALUE;
 
         for (Integer id : allParticipants.keySet()) {
             Point p = allParticipants.get(id);
-            int dist = getDistance(p.r, p.c);
 
             int minR = Integer.min(exitP.r, p.r);
             int minC = Integer.min(exitP.c, p.c);
@@ -266,16 +264,11 @@ public class Main {
             int diffC = maxC - minC + 1;
             int size = Integer.max(diffR, diffC);
 
-            if (dist < minDist) {
-                minDist = dist;
+            if (size < minSize) {
+                minSize = size;
                 result = id;
                 minP = p;
-            } else if (dist == minDist) {
-                if (size > minSize) {
-                    continue;
-                }
-                minSize = size;
-
+            } else if (size == minSize) {
                 if (p.r < minP.r) {
                     minP = p;
                     result = id;
