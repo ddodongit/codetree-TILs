@@ -11,7 +11,7 @@ public class Main {
     static int N, M, K;
     static Point exitP; // 출구 좌표
     static HashMap<Integer, Point> allParticipants; // < idx, point> 모든 참가자 좌표
-    static HashMap<Integer, HashSet<Integer>> participantsPos; // <2차원->1차원, id[] >
+    static HashSet<Integer>[][] pMap;
     static int[][] map; // EMPTY, WALL, EXIT만 저장
     static int totalDist; // 모든 이동 거리
     static int rotateR, rotateC, squareSize;
@@ -27,45 +27,47 @@ public class Main {
         K = Integer.parseInt(st.nextToken());
 
         // map
-        map = new int[N][N];
-        for (int i = 0; i < N; i++) {
+        map = new int[N + 1][N + 1];
+        pMap = new HashSet[N + 1][N + 1];
+        for (int i = 1; i <= N; i++) {
             st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < N; j++) {
+            for (int j = 1; j <= N; j++) {
                 map[i][j] = Integer.parseInt(st.nextToken());
+                pMap[i][j] = new HashSet<>();
             }
         }
 
         // participants
         allParticipants = new HashMap<>();
-        participantsPos = new HashMap<>();
 
         for (int i = 1; i <= M; i++) {
             st = new StringTokenizer(br.readLine());
-            int r = Integer.parseInt(st.nextToken()) - 1;
-            int c = Integer.parseInt(st.nextToken()) - 1;
+            int r = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
             allParticipants.put(i, new Point(r, c));
-            int num = r * N + c;
-            participantsPos.computeIfAbsent(num, k -> new HashSet<>()).add(i);
+            pMap[r][c].add(i);
         }
 
+//
         // exit
         st = new StringTokenizer(br.readLine());
-        int r = Integer.parseInt(st.nextToken()) - 1;
-        int c = Integer.parseInt(st.nextToken()) - 1;
+        int r = Integer.parseInt(st.nextToken());
+        int c = Integer.parseInt(st.nextToken());
         exitP = new Point(r, c);
         map[r][c] = EXIT;
 
         for (int i = 1; i <= K; i++) {
+            move();
             if (allParticipants.isEmpty()) {
                 break;
             }
-            move();
             rotate();
         }
 
         System.out.println(totalDist);
-        System.out.println((exitP.r + 1) + " " + (exitP.c + 1));
+        System.out.println(exitP.r + " " + exitP.c);
     }
+
 
     private static void move() {
         for (int i = 1; i <= M; i++) {
@@ -79,7 +81,7 @@ public class Main {
                 continue;
             }
 
-            participantsPos.get(p.r * N + p.c).remove(i);
+            pMap[p.r][p.c].remove(i);
             // 참가자 이동
             p.r += dr[dir];
             p.c += dc[dir];
@@ -88,10 +90,9 @@ public class Main {
 
             if (map[p.r][p.c] == EXIT) { // 출구로 나감
                 allParticipants.remove(i);
+            } else {
+                pMap[p.r][p.c].add(i);
             }
-
-            participantsPos.computeIfAbsent(p.r * N + p.c, k -> new HashSet<>()).add(i);
-
         }
 
     }
@@ -125,15 +126,13 @@ public class Main {
     private static void rotate() {
 
         findMinSquare();
-
         rotateSquare();
-
     }
 
     private static void rotateSquare() {
 
         int[][] copied = new int[squareSize][squareSize];
-        HashMap<Integer, HashSet<Integer>> tmpPos = new HashMap<>();
+        HashSet<Integer>[][] tmpPmap = new HashSet[squareSize][squareSize];
 
         int col = squareSize - 1;
         int row = 0;
@@ -141,9 +140,7 @@ public class Main {
             row = 0;
             for (int c = rotateC; c < rotateC + squareSize; c++) {
                 copied[row][col] = map[r][c];
-                if (participantsPos.containsKey(r * N + c)) {
-                    tmpPos.put(row * squareSize + col, participantsPos.remove(r * N + c));
-                }
+                tmpPmap[row][col] = pMap[r][c];
                 row++;
             }
             col--;
@@ -155,12 +152,12 @@ public class Main {
             col = rotateC;
             for (int c = 0; c < squareSize; c++) {
                 map[row][col] = copied[r][c];
-                if (tmpPos.containsKey(r * squareSize + c)) {
-                    HashSet<Integer> list = tmpPos.get(r * squareSize + c);
-                    participantsPos.put(row * N + col, list);
+                pMap[row][col] = tmpPmap[r][c];
 
-                    for (Integer id : list) {
-                        allParticipants.replace(id, new Point(row, col));
+                if (!pMap[row][col].isEmpty()) {
+                    for (Integer id : pMap[row][col]) {
+                        allParticipants.get(id).r = row;
+                        allParticipants.get(id).c = col;
                     }
                 }
 
@@ -200,12 +197,16 @@ public class Main {
         int maxSize = Integer.max(diffR, diffC);
         int size = Integer.min(diffR, diffC);
 
+//        가장 긴 변을 한 변으로 하는 정사각형 구하기
+//        가로 > 세로 : 상,하 순으로 변 길이 맞추기
+//        가로 < 세로 : 좌,우 순으로 변 길이 맞추기
+
         rotateR = minR;
         rotateC = minC;
 
         if (diffR < diffC) {
             // 상
-            for (int r = minR - 1; r >= 0; r--) {
+            for (int r = minR - 1; r >= 1; r--) {
                 if (size == maxSize) {
                     break;
                 }
@@ -215,7 +216,7 @@ public class Main {
 
             if (size < maxSize) {
                 // 하
-                for (int r = maxR + 1; r < N; r++) {
+                for (int r = maxR + 1; r <= N; r++) {
                     if (size == maxSize) {
                         break;
                     }
@@ -224,7 +225,7 @@ public class Main {
             }
         } else if (diffR > diffC) {
             // 좌
-            for (int c = minC - 1; c >= 0; c--) {
+            for (int c = minC - 1; c >= 1; c--) {
                 if (size == maxSize) {
                     break;
                 }
@@ -234,7 +235,7 @@ public class Main {
 
             if (size < maxSize) {
                 // 우
-                for (int c = maxC + 1; c < N; c++) {
+                for (int c = maxC + 1; c <= N; c++) {
                     if (size == maxSize) {
                         break;
                     }
@@ -247,19 +248,34 @@ public class Main {
     }
 
     private static int getNearParticipant() {
+
         int minDist = Integer.MAX_VALUE;
         Point minP = new Point(0, 0);
         int result = 0;
+        int minSize = 0;
 
         for (Integer id : allParticipants.keySet()) {
             Point p = allParticipants.get(id);
             int dist = getDistance(p.r, p.c);
+
+            int minR = Integer.min(exitP.r, p.r);
+            int minC = Integer.min(exitP.c, p.c);
+            int maxR = Integer.max(exitP.r, p.r);
+            int maxC = Integer.max(exitP.c, p.c);
+            int diffR = maxR - minR + 1;
+            int diffC = maxC - minC + 1;
+            int size = Integer.max(diffR, diffC);
 
             if (dist < minDist) {
                 minDist = dist;
                 result = id;
                 minP = p;
             } else if (dist == minDist) {
+                if (size > minSize) {
+                    continue;
+                }
+                minSize = size;
+
                 if (p.r < minP.r) {
                     minP = p;
                     result = id;
@@ -277,7 +293,7 @@ public class Main {
 
 
     private static boolean isOutOfBounds(int r, int c) {
-        return r < 0 || r > N - 1 || c < 0 || c > N - 1;
+        return r < 1 || r > N || c < 1 || c > N;
     }
 
     private static int getDistance(int r, int c) {
@@ -293,6 +309,7 @@ public class Main {
             this.r = r;
             this.c = c;
         }
+
 
     }
 }
