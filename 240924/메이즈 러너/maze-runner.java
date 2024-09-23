@@ -267,14 +267,16 @@ public class Main {
             if (size < minSize) {
                 minSize = size;
                 result = id;
-                minP = p;
+                minP.r = minR;
+                minP.c = minC;
             } else if (size == minSize) {
-                if (p.r < minP.r) {
-                    minP = p;
+                if (minR < minP.r) {
+                    minP.r = minR;
+                    minP.c = minC;
                     result = id;
-                } else if (minP.r == p.r) {
-                    if (p.c < minP.c) {
-                        minP = p;
+                } else if (minP.r == minR) {
+                    if (minC < minP.c) {
+                        minP.c = minC;
                         result = id;
                     }
                 }
