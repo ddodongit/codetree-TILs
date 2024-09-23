@@ -68,7 +68,6 @@ public class Main {
         System.out.println(exitP.r + " " + exitP.c);
     }
 
-
     private static void move() {
         for (int i = 1; i <= M; i++) {
             if (!allParticipants.containsKey(i)) {
@@ -172,37 +171,28 @@ public class Main {
             }
             row++;
         }
-
     }
 
     private static void findMinSquare() {
 
+        squareSize = Integer.MAX_VALUE;
+        rotateR = Integer.MAX_VALUE;
+        rotateC = Integer.MAX_VALUE;
+
         int id = getNearParticipant();
         Point p = allParticipants.get(id);
 
-        makeSquare(p);
     }
 
-    private static void makeSquare(Point p) {
-
-        int minR = Integer.min(exitP.r, p.r);
-        int minC = Integer.min(exitP.c, p.c);
-
-        int maxR = Integer.max(exitP.r, p.r);
-        int maxC = Integer.max(exitP.c, p.c);
-
+    private static Point makeSquare(int minR, int minC, int maxR, int maxC) {
+        
         int diffR = maxR - minR + 1;
         int diffC = maxC - minC + 1;
 
         int maxSize = Integer.max(diffR, diffC);
         int size = Integer.min(diffR, diffC);
 
-//        가장 긴 변을 한 변으로 하는 정사각형 구하기
-//        가로 > 세로 : 상,하 순으로 변 길이 맞추기
-//        가로 < 세로 : 좌,우 순으로 변 길이 맞추기
-
-        rotateR = minR;
-        rotateC = minC;
+        Point minP = new Point(minR, minC);
 
         if (diffR < diffC) {
             // 상
@@ -211,7 +201,7 @@ public class Main {
                     break;
                 }
                 size++;
-                rotateR = r;
+                minP.r = r;
             }
 
             if (size < maxSize) {
@@ -230,7 +220,7 @@ public class Main {
                     break;
                 }
                 size++;
-                rotateC = c;
+                minP.c = c;
             }
 
             if (size < maxSize) {
@@ -244,43 +234,49 @@ public class Main {
             }
         }
 
-        squareSize = size;
+        return minP;
     }
 
     private static int getNearParticipant() {
 
         Point minP = new Point(0, 0);
         int result = 0;
-        int minSize = Integer.MAX_VALUE;
 
         for (Integer id : allParticipants.keySet()) {
             Point p = allParticipants.get(id);
-
             int minR = Integer.min(exitP.r, p.r);
             int minC = Integer.min(exitP.c, p.c);
+
             int maxR = Integer.max(exitP.r, p.r);
             int maxC = Integer.max(exitP.c, p.c);
+
             int diffR = maxR - minR + 1;
             int diffC = maxC - minC + 1;
-            int size = Integer.max(diffR, diffC);
 
-            if (size < minSize) {
-                minSize = size;
+            int maxSize = Integer.max(diffR, diffC);
+            int size = Integer.min(diffR, diffC);
+
+            if (maxSize < squareSize) {
+                squareSize = maxSize;
+                minP = makeSquare(minR, minC, maxR, maxC);
+                rotateR = minP.r;
+                rotateC = minP.c;
                 result = id;
-                minP.r = minR;
-                minP.c = minC;
-            } else if (size == minSize) {
-                if (minR < minP.r) {
-                    minP.r = minR;
-                    minP.c = minC;
+            } else if (maxSize == squareSize) {
+                minP = makeSquare(minR, minC, maxR, maxC);
+                if (minP.r < rotateR) {
+                    rotateR = minP.r;
+                    rotateC = minP.c;
                     result = id;
-                } else if (minP.r == minR) {
-                    if (minC < minP.c) {
-                        minP.c = minC;
+                } else if (minP.r == rotateR) {
+                    if (minP.c < rotateC) {
+                        rotateC = minP.c;
                         result = id;
                     }
                 }
+
             }
+
         }
 
         return result;
@@ -304,7 +300,5 @@ public class Main {
             this.r = r;
             this.c = c;
         }
-
-
     }
 }
