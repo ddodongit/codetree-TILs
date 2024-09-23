@@ -93,7 +93,7 @@ public class Main {
                 if (knight.hole > 0) {
                     knight.k -= knight.hole;
                     allDamage[kId] += knight.hole;
-                    if (knight.k == 0) {
+                    if (knight.k <= 0) {
                         removeKnight(knight);
                     }
                 }
