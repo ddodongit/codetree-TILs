@@ -175,9 +175,9 @@ public class Main {
                 for (int nextJ = nowJ; nextJ < nowJ + knight.w; nextJ++) {
                     if (map[beforeI][nextJ] == knight.idx) {
                         map[beforeI][nextJ] = EMPTY;
-                        if (barriers[beforeI][nextJ] == HOLE) {
-                            knight.hole--;
-                        }
+                    }
+                    if (barriers[beforeI][nextJ] == HOLE) {
+                        knight.hole--;
                     }
                 }
 
