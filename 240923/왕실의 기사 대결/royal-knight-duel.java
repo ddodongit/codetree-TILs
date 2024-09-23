@@ -222,7 +222,7 @@ public class Main {
             return false;
         } else {
             for (Integer kIdx : nowPushed) {
-                boolean result = moveKnights(kIdx, dir, nowPushed);
+                boolean result = moveKnights(kIdx, dir, allPushed);
                 if (!result) {
                     return false;
                 }
