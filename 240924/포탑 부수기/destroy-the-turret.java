@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
-import java.util.Queue;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
@@ -12,9 +11,8 @@ public class Main {
     static Bomb[][] bombMap;
     static TreeSet<Bomb> allBombs;
     static Bomb blue, red;
-    static Queue<Bomb> yellow;
-    static int N, M, K, minDist = Integer.MAX_VALUE;
-    ;
+    static ArrayDeque<Bomb> yellow;
+    static int N, M, K, minDist;
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -64,7 +62,6 @@ public class Main {
         allBombs = repaired;
     }
 
-
     private static void choose(int nowTurn) {
         // choose blue
         blue = allBombs.pollFirst();
@@ -73,35 +70,42 @@ public class Main {
     }
 
     private static void attack() {
+
         // choose red
         red = allBombs.pollLast();
         allBombs.add(blue);
-        bombMap[blue.r][blue.c] = blue;
 
         boolean[][] visited = new boolean[N + 1][M + 1];
         visited[blue.r][blue.c] = true;
-        minDist = Integer.MAX_VALUE;
+        minDist = N * M;
         yellow = new ArrayDeque<>();
 
         laserAttack(blue.r, blue.c, visited, new ArrayDeque<>());
         if (yellow.isEmpty()) {
             bombAttack();
+        } else {
+            yellow.pollLast();
         }
 
         // red
         red.power -= blue.power;
-        allBombs.add(red);
-        bombMap[red.r][red.c] = red;
+        if (red.power > 0) {
+            allBombs.add(red);
+        } else {
+            red.power = 0;
+        }
 
         // yellow
         TreeSet<Bomb> changed = new TreeSet<>();
 
         for (Bomb bomb : allBombs) {
-            if (yellow.contains(bomb) && bomb != red) {
-                bomb.power -= blue.power / 2;
+            if (yellow.contains(bomb)) {
+                bomb.power -= (blue.power / 2);
             }
             if (bomb.power > 0) {
                 changed.add(bomb);
+            } else {
+                bomb.power = 0;
             }
 
         }
@@ -128,7 +132,7 @@ public class Main {
     }
 
     private static void laserAttack(int nowR, int nowC, boolean[][] visited,
-        Queue<Bomb> ways) { // dfs
+        ArrayDeque<Bomb> ways) { // dfs
 
         if (ways.size() > minDist) {
             return;
@@ -156,6 +160,9 @@ public class Main {
                 continue;
             }
 
+            if (ways.size() >= minDist) {
+                continue;
+            }
             visited[nextR][nextC] = true;
             ways.add(bombMap[nextR][nextC]);
             laserAttack(nextR, nextC, visited, ways);
@@ -164,8 +171,8 @@ public class Main {
 
         }
 
-    }
 
+    }
 
     private static int isOutOfBounds(int pos, int range) {
 
@@ -178,7 +185,6 @@ public class Main {
         }
 
     }
-
 
     static class Bomb implements Comparable<Bomb> {
 
@@ -208,5 +214,6 @@ public class Main {
             return Integer.compare(this.power, o.power);
         }
     }
+
 
 }
