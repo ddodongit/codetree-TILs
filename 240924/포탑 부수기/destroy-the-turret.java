@@ -13,7 +13,8 @@ public class Main {
     static TreeSet<Bomb> allBombs;
     static Bomb blue, red;
     static Queue<Bomb> yellow;
-    static int N, M, K;
+    static int N, M, K, minDist = Integer.MAX_VALUE;
+    ;
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -77,7 +78,13 @@ public class Main {
         allBombs.add(blue);
         bombMap[blue.r][blue.c] = blue;
 
-        if (!laserAttack()) {
+        boolean[][] visited = new boolean[N + 1][M + 1];
+        visited[blue.r][blue.c] = true;
+        minDist = Integer.MAX_VALUE;
+        yellow = new ArrayDeque<>();
+
+        laserAttack(blue.r, blue.c, visited, new ArrayDeque<>());
+        if (yellow.isEmpty()) {
             bombAttack();
         }
 
@@ -90,7 +97,7 @@ public class Main {
         TreeSet<Bomb> changed = new TreeSet<>();
 
         for (Bomb bomb : allBombs) {
-            if (yellow.contains(bomb)) {
+            if (yellow.contains(bomb) && bomb != red) {
                 bomb.power -= blue.power / 2;
             }
             if (bomb.power > 0) {
@@ -102,7 +109,6 @@ public class Main {
     }
 
     private static void bombAttack() {
-        yellow = new ArrayDeque<>();
 
         Bomb now = red;
         for (int d = 1; d <= 8; d++) {
@@ -121,61 +127,43 @@ public class Main {
         }
     }
 
-    private static boolean laserAttack() {
-        yellow = new ArrayDeque<>();
-        Queue<Bomb> queue = new ArrayDeque<>();
+    private static void laserAttack(int nowR, int nowC, boolean[][] visited,
+        Queue<Bomb> ways) { // dfs
 
-        boolean[][] visited = new boolean[N + 1][M + 1];
-        int minDist = Integer.MAX_VALUE;
-
-        queue.add(blue);
-
-        while (!queue.isEmpty()) {
-            Bomb now = queue.poll();
-
-            visited[now.r][now.c] = true;
-            int dist = getDistance(now.r, now.c);
-            if (dist >= minDist) {
-                continue;
-            }
-            minDist = dist;
-
-            if (now == red) {
-                return true;
-            }
-
-            if (now != blue) {
-                yellow.add(now);
-            }
-
-            for (int d = 2; d <= 8; d += 2) { // 우,하,좌,상
-                int nextR = now.r + dr[d];
-                int nextC = now.c + dc[d];
-
-                nextR = isOutOfBounds(nextR, N);
-                nextC = isOutOfBounds(nextC, M);
-
-                if (visited[nextR][nextC]) {
-                    continue;
-                }
-                if (bombMap[nextR][nextC].power == 0) {
-                    continue;
-                }
-
-                if (minDist < getDistance(nextR, nextC)) {
-                    continue;
-                }
-
-                queue.add(bombMap[nextR][nextC]);
-
-            }
+        if (ways.size() > minDist) {
+            return;
         }
 
-        return false;
-    }
+        if (nowR == red.r && nowC == red.c) {
+            if (minDist > ways.size()) {
+                minDist = ways.size();
+                yellow = new ArrayDeque<>(ways);
+            }
+            return;
+        }
 
-    private static int getDistance(int nowR, int nowC) {
-        return Math.abs(nowR - red.r) + Math.abs(nowC - red.c);
+        for (int d = 2; d <= 8; d += 2) { // 우, 하, 좌, 상
+            int nextR = nowR + dr[d];
+            int nextC = nowC + dc[d];
+
+            nextR = isOutOfBounds(nextR, N);
+            nextC = isOutOfBounds(nextC, M);
+
+            if (visited[nextR][nextC]) {
+                continue;
+            }
+            if (bombMap[nextR][nextC].power == 0) {
+                continue;
+            }
+
+            visited[nextR][nextC] = true;
+            ways.add(bombMap[nextR][nextC]);
+            laserAttack(nextR, nextC, visited, ways);
+            ways.remove(bombMap[nextR][nextC]);
+            visited[nextR][nextC] = false;
+
+        }
+
     }
 
 
@@ -191,6 +179,7 @@ public class Main {
 
     }
 
+
     static class Bomb implements Comparable<Bomb> {
 
         int r, c, sumRC, power, usedTurn;
@@ -201,17 +190,6 @@ public class Main {
             this.sumRC = sumRC;
             this.power = power;
             this.usedTurn = usedTurn;
-        }
-
-        @Override
-        public String toString() {
-            return "Bomb{" +
-                "r=" + r +
-                ", c=" + c +
-                ", sumRC=" + sumRC +
-                ", power=" + power +
-                ", usedTurn=" + usedTurn +
-                "}\n";
         }
 
         @Override
