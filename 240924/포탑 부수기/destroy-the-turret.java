@@ -122,6 +122,9 @@ public class Main {
             nextR = isOutOfBounds(nextR, N);
             nextC = isOutOfBounds(nextC, M);
 
+            if (nextR == blue.r && nextC == blue.c) {
+                continue;
+            }
             if (bombMap[nextR][nextC].power == 0) {
                 continue;
             }
