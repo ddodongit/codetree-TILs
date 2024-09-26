@@ -60,7 +60,7 @@ public class Main {
                 break;
             }
             enterBaseCamp(t);
-        
+         
             if (cnt == m) {
                 break;
             }
@@ -98,7 +98,7 @@ public class Main {
                     result = next;
                     break;
                 }
-                
+
                 if (dist > minDist) {
                     continue;
                 }
@@ -109,7 +109,6 @@ public class Main {
                     result = next;
                 }
                 minDist = dist;
-
 
             }
             pos.r = result.r;
@@ -166,8 +165,9 @@ public class Main {
             }
         }
 
-        return 0;
+        return Integer.MAX_VALUE;
     }
+
 
     private static void enterBaseCamp(int nowT) {
 
@@ -183,6 +183,7 @@ public class Main {
 
         // block
         map[baseCamp.r][baseCamp.c] = BLOCKED;
+        allBaseCamp.remove(baseCamp);
     }
 
 
@@ -191,11 +192,8 @@ public class Main {
         int minDist = Integer.MAX_VALUE;
         Point result = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
 
-        for (Point baseCamp : allBaseCamp) {
-            if (map[baseCamp.r][baseCamp.c] == BLOCKED) {
-                continue;
-            }
 
+        for (Point baseCamp : allBaseCamp) {
             int dist = bfs(target, baseCamp, minDist);
 
             if (dist > minDist) {
@@ -256,6 +254,6 @@ public class Main {
             return Integer.compare(this.r, o.r);
         }
 
-
+    
     }
 }
