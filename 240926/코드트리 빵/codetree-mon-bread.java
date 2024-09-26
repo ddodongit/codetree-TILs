@@ -3,7 +3,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
@@ -12,6 +11,7 @@ public class Main {
     static final int[] di = {-1, 0, 0, 1}, dj = {0, -1, 1, 0}; // 상,좌,우,하
     static final int EMPTY = 0, BLOCKED = -2, CAMP = -1; // TARGET= 1~m
     static int n, m, cnt;
+    static HashSet<Point> allBaseCamp;
     static HashMap<Integer, Point> nowPos; // <idx, 현재 위치> 사람의 현재 위치
     static HashSet<Integer> peopleOnMap; // 격자에 있는 사람 idx
     static HashMap<Integer, Point> allTarget; // <idx, target point>
@@ -27,6 +27,7 @@ public class Main {
         m = Integer.parseInt(st.nextToken());
 
         map = new int[n + 1][n + 1];
+        allBaseCamp = new HashSet<>();
 
         for (int i = 1; i <= n; i++) {
             st = new StringTokenizer(br.readLine());
@@ -34,6 +35,7 @@ public class Main {
                 int value = Integer.parseInt(st.nextToken());
                 if (value == 1) {
                     value = CAMP;
+                    allBaseCamp.add(new Point(i, j));
                 }
                 map[i][j] = value;
             }
@@ -58,6 +60,7 @@ public class Main {
                 break;
             }
             enterBaseCamp(t);
+        
             if (cnt == m) {
                 break;
             }
@@ -78,9 +81,39 @@ public class Main {
         for (Integer idx : peopleOnMap) {
             Point pos = nowPos.get(idx);
             Point target = allTarget.get(idx);
-            Point next = bfs(pos, idx);
-            pos.r = next.r;
-            pos.c = next.c;
+
+            int minDist = Integer.MAX_VALUE;
+            Point result = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
+            for (int d = 0; d < 4; d++) {
+                Point next = new Point(pos.r + di[d], pos.c + dj[d]);
+                if (isOutOfBounds(next.r, next.c)) {
+                    continue;
+                }
+                if (map[next.r][next.c] == BLOCKED) {
+                    continue;
+                }
+                int dist = bfs(next, target, minDist);
+
+                if (map[next.r][next.c] == idx) {
+                    result = next;
+                    break;
+                }
+                
+                if (dist > minDist) {
+                    continue;
+                }
+
+                if (minDist == dist) {
+                    result = result.compareTo(next) < 0 ? result : next;
+                } else {
+                    result = next;
+                }
+                minDist = dist;
+
+
+            }
+            pos.r = result.r;
+            pos.c = result.c;
 
             if (map[pos.r][pos.c] == idx) {
                 blocked.add(pos);
@@ -95,43 +128,28 @@ public class Main {
         }
     }
 
-    private static Point bfs(Point start, int targetIdx) {
-        Queue<Point> queue = new ArrayDeque<>();
-        ArrayDeque<Queue<Point>> pathQueue = new ArrayDeque<>();
+    private static int bfs(Point start, Point end, int minDist) {
+        Queue<Target> queue = new ArrayDeque<>();
         boolean[][] visited = new boolean[n + 1][n + 1];
-        Point result = null;
-        int minDist = Integer.MAX_VALUE;
 
-        queue.add(start);
-        pathQueue.add(new ArrayDeque<>());
+        queue.add(new Target(0, start));
 
         while (!queue.isEmpty()) {
-            Point now = queue.poll();
-            Queue<Point> nowPath = pathQueue.poll();
+            Target now = queue.poll();
+            Point nowP = now.p;
 
-            visited[now.r][now.c] = true;
-            if (map[now.r][now.c] == targetIdx) {
+            if (now.dist > minDist) {
+                return now.dist;
+            }
 
-                Point p = nowPath.peek();
-                int dist = getDistance(p, start);
-
-                if (minDist > dist) {
-                    minDist = dist;
-                    result = p;
-                } else if (minDist == dist) {
-                    if (result.r > p.r) {
-                        result = p;
-                    } else if (result.r == p.r) {
-                        if (result.c > p.c) {
-                            result = p;
-                        }
-                    }
-                }
+            visited[nowP.r][nowP.c] = true;
+            if (nowP.r == end.r && nowP.c == end.c) {
+                return now.dist;
             }
 
             for (int d = 0; d < 4; d++) { // 상,좌,우,하
-                int nextR = now.r + di[d];
-                int nextC = now.c + dj[d];
+                int nextR = nowP.r + di[d];
+                int nextC = nowP.c + dj[d];
 
                 if (isOutOfBounds(nextR, nextC)) {
                     continue;
@@ -144,21 +162,11 @@ public class Main {
                 }
 
                 Point next = new Point(nextR, nextC);
-                queue.add(next);
-                Queue<Point> nextPath = new ArrayDeque<>(nowPath);
-                nextPath.add(next);
-                pathQueue.add(nextPath);
-
-
+                queue.add(new Target(now.dist + 1, next));
             }
-
         }
 
-        return result;
-    }
-
-    private static int getDistance(Point p, Point start) {
-        return Math.abs(p.r - start.r) + Math.abs(p.c - start.c);
+        return 0;
     }
 
     private static void enterBaseCamp(int nowT) {
@@ -170,7 +178,7 @@ public class Main {
         Point target = allTarget.get(nowT);
         Point baseCamp = findNearBaseCamp(target);
         // enter
-        nowPos.put(nowT, baseCamp);
+        nowPos.put(nowT, new Point(baseCamp.r, baseCamp.c));
         peopleOnMap.add(nowT);
 
         // block
@@ -178,42 +186,32 @@ public class Main {
     }
 
 
-    private static Point findNearBaseCamp(Point start) {
-        boolean[][] visited = new boolean[n + 1][n + 1];
-        PriorityQueue<Target> pq = new PriorityQueue<>();
-        pq.add(new Target(0, start));
+    private static Point findNearBaseCamp(Point target) {
 
-        while (!pq.isEmpty()) {
-            Target target = pq.poll();
-            Point now = target.p;
+        int minDist = Integer.MAX_VALUE;
+        Point result = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
 
-            visited[now.r][now.c] = true;
-            if (map[now.r][now.c] == CAMP) {
-                int dist = getDistance(now, start);
-                return now;
+        for (Point baseCamp : allBaseCamp) {
+            if (map[baseCamp.r][baseCamp.c] == BLOCKED) {
+                continue;
             }
 
-            for (int d = 0; d < 4; d++) { // 상,좌,우,하
-                int nextR = now.r + di[d];
-                int nextC = now.c + dj[d];
+            int dist = bfs(target, baseCamp, minDist);
 
-                if (isOutOfBounds(nextR, nextC)) {
-                    continue;
-                }
-                if (visited[nextR][nextC]) {
-                    continue;
-                }
-                if (map[nextR][nextC] == BLOCKED) {
-                    continue;
-                }
-                Point next = new Point(nextR, nextC);
-                pq.add(new Target(target.dist + 1, next));
+            if (dist > minDist) {
+                continue;
             }
+
+            if (minDist == dist) {
+                result = result.compareTo(baseCamp) < 0 ? result : baseCamp;
+            } else {
+                result = baseCamp;
+            }
+            minDist = dist;
 
         }
 
-        return null;
-
+        return result;
     }
 
 
@@ -235,17 +233,13 @@ public class Main {
         @Override
         public int compareTo(Target o) {
             if (this.dist == o.dist) {
-                if (this.p.r == o.p.r) {
-                    return Integer.compare(this.p.c, o.p.c);
-                } else {
-                    return Integer.compare(this.p.r, o.p.r);
-                }
+                return this.p.compareTo(o.p);
             }
             return Integer.compare(this.dist, o.dist);
         }
     }
 
-    static class Point {
+    static class Point implements Comparable<Point> {
 
         int r, c;
 
@@ -253,6 +247,15 @@ public class Main {
             this.r = r;
             this.c = c;
         }
+
+        @Override
+        public int compareTo(Point o) {
+            if (this.r == o.r) {
+                return Integer.compare(this.c, o.c);
+            }
+            return Integer.compare(this.r, o.r);
+        }
+
 
     }
 }
