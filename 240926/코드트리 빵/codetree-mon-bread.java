@@ -16,6 +16,7 @@ public class Main {
     static HashMap<Integer, Point> allTarget; // <idx, target point>
     static int[][] map; // 격자(EMPTY= 0 , BLOCKED = -2, CAMP = -1, TARGET= 1~M
 
+
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
@@ -46,7 +47,6 @@ public class Main {
             int c = Integer.parseInt(st.nextToken());
 
             allTarget.put(idx, new Point(r, c));
-            nowPos.put(idx, null);
             map[r][c] = idx;
         }
 
@@ -56,7 +56,11 @@ public class Main {
             if (cnt == m) {
                 break;
             }
-            enterBaseCamp(t++);
+            enterBaseCamp(t);
+            if (cnt == m) {
+                break;
+            }
+            t++;
         }
         System.out.println(t);
     }
@@ -73,27 +77,27 @@ public class Main {
         for (Integer idx : peopleOnMap) {
             Point pos = nowPos.get(idx);
             Point target = allTarget.get(idx);
-            Queue<Integer> path = bfs(pos, target);
+            Queue<Integer> path = bfs(pos, idx);
             int nextR = path.poll();
             int nextC = path.poll();
 
             pos.r = nextR;
             pos.c = nextC;
 
-            if (pos.r == target.r && pos.c == target.c) {
+            if (map[pos.r][pos.c] == idx) {
                 blocked.add(pos);
             }
         }
 
         // block
         for (Point p : blocked) {
+            cnt++;
             peopleOnMap.remove(map[p.r][p.c]);
             map[p.r][p.c] = BLOCKED;
-            cnt++;
         }
     }
 
-    private static Queue<Integer> bfs(Point start, Point target) {
+    private static Queue<Integer> bfs(Point start, int targetIdx) {
         Queue<Integer> queue = new ArrayDeque<>();
         ArrayDeque<Queue<Integer>> pathQueue = new ArrayDeque<>();
         boolean[][] visited = new boolean[n + 1][n + 1];
@@ -108,7 +112,7 @@ public class Main {
             Queue<Integer> nowPath = pathQueue.poll();
 
             visited[nowR][nowC] = true;
-            if (target.r == nowR && target.c == nowC) {
+            if (map[nowR][nowC] == targetIdx) {
                 return nowPath;
             }
 
@@ -211,5 +215,6 @@ public class Main {
             this.r = r;
             this.c = c;
         }
+
     }
 }
