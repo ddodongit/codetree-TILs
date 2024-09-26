@@ -3,6 +3,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
@@ -77,12 +78,9 @@ public class Main {
         for (Integer idx : peopleOnMap) {
             Point pos = nowPos.get(idx);
             Point target = allTarget.get(idx);
-            Queue<Integer> path = bfs(pos, idx);
-            int nextR = path.poll();
-            int nextC = path.poll();
-
-            pos.r = nextR;
-            pos.c = nextC;
+            Point next = bfs(pos, idx);
+            pos.r = next.r;
+            pos.c = next.c;
 
             if (map[pos.r][pos.c] == idx) {
                 blocked.add(pos);
@@ -97,28 +95,29 @@ public class Main {
         }
     }
 
-    private static Queue<Integer> bfs(Point start, int targetIdx) {
-        Queue<Integer> queue = new ArrayDeque<>();
-        ArrayDeque<Queue<Integer>> pathQueue = new ArrayDeque<>();
+    private static Point bfs(Point start, int targetIdx) {
+        Queue<Point> queue = new ArrayDeque<>();
+        ArrayDeque<Queue<Point>> pathQueue = new ArrayDeque<>();
         boolean[][] visited = new boolean[n + 1][n + 1];
+        PriorityQueue<Target> pq = new PriorityQueue<>();
 
-        queue.add(start.r);
-        queue.add(start.c);
+        queue.add(start);
         pathQueue.add(new ArrayDeque<>());
 
         while (!queue.isEmpty()) {
-            int nowR = queue.poll();
-            int nowC = queue.poll();
-            Queue<Integer> nowPath = pathQueue.poll();
+            Point now = queue.poll();
+            Queue<Point> nowPath = pathQueue.poll();
 
-            visited[nowR][nowC] = true;
-            if (map[nowR][nowC] == targetIdx) {
-                return nowPath;
+            visited[now.r][now.c] = true;
+            if (map[now.r][now.c] == targetIdx) {
+                Point p = nowPath.poll();
+                int dist = getDistance(p, start);
+                pq.add(new Target(dist, p));
             }
 
             for (int d = 0; d < 4; d++) { // 상,좌,우,하
-                int nextR = nowR + di[d];
-                int nextC = nowC + dj[d];
+                int nextR = now.r + di[d];
+                int nextC = now.c + dj[d];
 
                 if (isOutOfBounds(nextR, nextC)) {
                     continue;
@@ -130,11 +129,10 @@ public class Main {
                     continue;
                 }
 
-                queue.add(nextR);
-                queue.add(nextC);
-                Queue<Integer> nextPath = new ArrayDeque<>(nowPath);
-                nextPath.add(nextR);
-                nextPath.add(nextC);
+                Point next = new Point(nextR, nextC);
+                queue.add(next);
+                Queue<Point> nextPath = new ArrayDeque<>(nowPath);
+                nextPath.add(next);
                 pathQueue.add(nextPath);
 
 
@@ -142,7 +140,11 @@ public class Main {
 
         }
 
-        return null;
+        return pq.poll().p;
+    }
+
+    private static int getDistance(Point p, Point start) {
+        return Math.abs(p.r - start.r) + Math.abs(p.c - start.c);
     }
 
     private static void enterBaseCamp(int nowT) {
@@ -163,24 +165,24 @@ public class Main {
 
 
     private static Point findNearBaseCamp(Point start) {
-        Queue<Integer> queue = new ArrayDeque<>();
+        Queue<Point> queue = new ArrayDeque<>();
         boolean[][] visited = new boolean[n + 1][n + 1];
+        PriorityQueue<Target> pq = new PriorityQueue<>();
 
-        queue.add(start.r);
-        queue.add(start.c);
+        queue.add(start);
 
         while (!queue.isEmpty()) {
-            int nowR = queue.poll();
-            int nowC = queue.poll();
+            Point now = queue.poll();
 
-            visited[nowR][nowC] = true;
-            if (map[nowR][nowC] == CAMP) {
-                return new Point(nowR, nowC);
+            visited[now.r][now.c] = true;
+            if (map[now.r][now.c] == CAMP) {
+                int dist = getDistance(now, start);
+                pq.add(new Target(dist, now));
             }
 
             for (int d = 0; d < 4; d++) { // 상,좌,우,하
-                int nextR = nowR + di[d];
-                int nextC = nowC + dj[d];
+                int nextR = now.r + di[d];
+                int nextC = now.c + dj[d];
 
                 if (isOutOfBounds(nextR, nextC)) {
                     continue;
@@ -191,20 +193,46 @@ public class Main {
                 if (map[nextR][nextC] == BLOCKED) {
                     continue;
                 }
+                if (map[nextR][nextC] != CAMP && map[nextR][nextC] != EMPTY) {
+                    continue;
+                }
 
-                queue.add(nextR);
-                queue.add(nextC);
+                queue.add(new Point(nextR, nextC));
             }
 
         }
 
-        return null;
+        return pq.poll().p;
 
     }
 
 
     private static boolean isOutOfBounds(int nextR, int nextC) {
         return nextR < 1 || nextR > n || nextC < 1 || nextC > n;
+    }
+
+    static class Target implements Comparable<Target> {
+
+        int dist;
+        Point p;
+
+        public Target(int dist, Point p) {
+            this.dist = dist;
+            this.p = p;
+        }
+
+
+        @Override
+        public int compareTo(Target o) {
+            if (this.dist == o.dist) {
+                if (this.p.r == o.p.r) {
+                    return Integer.compare(this.p.c, o.p.c);
+                } else {
+                    return Integer.compare(this.p.r, o.p.r);
+                }
+            }
+            return Integer.compare(this.dist, o.dist);
+        }
     }
 
     static class Point {
@@ -215,6 +243,7 @@ public class Main {
             this.r = r;
             this.c = c;
         }
+
 
     }
 }
