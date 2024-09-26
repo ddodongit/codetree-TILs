@@ -193,9 +193,6 @@ public class Main {
                 if (map[nextR][nextC] == BLOCKED) {
                     continue;
                 }
-                if (map[nextR][nextC] != CAMP && map[nextR][nextC] != EMPTY) {
-                    continue;
-                }
 
                 queue.add(new Point(nextR, nextC));
             }
