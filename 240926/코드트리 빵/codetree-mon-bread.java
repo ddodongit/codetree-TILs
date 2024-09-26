@@ -99,7 +99,8 @@ public class Main {
         Queue<Point> queue = new ArrayDeque<>();
         ArrayDeque<Queue<Point>> pathQueue = new ArrayDeque<>();
         boolean[][] visited = new boolean[n + 1][n + 1];
-        PriorityQueue<Target> pq = new PriorityQueue<>();
+        Point result = null;
+        int minDist = Integer.MAX_VALUE;
 
         queue.add(start);
         pathQueue.add(new ArrayDeque<>());
@@ -110,9 +111,22 @@ public class Main {
 
             visited[now.r][now.c] = true;
             if (map[now.r][now.c] == targetIdx) {
-                Point p = nowPath.poll();
+
+                Point p = nowPath.peek();
                 int dist = getDistance(p, start);
-                pq.add(new Target(dist, p));
+
+                if (minDist > dist) {
+                    minDist = dist;
+                    result = p;
+                } else if (minDist == dist) {
+                    if (result.r > p.r) {
+                        result = p;
+                    } else if (result.r == p.r) {
+                        if (result.c > p.c) {
+                            result = p;
+                        }
+                    }
+                }
             }
 
             for (int d = 0; d < 4; d++) { // 상,좌,우,하
@@ -140,7 +154,7 @@ public class Main {
 
         }
 
-        return pq.poll().p;
+        return result;
     }
 
     private static int getDistance(Point p, Point start) {
@@ -165,19 +179,18 @@ public class Main {
 
 
     private static Point findNearBaseCamp(Point start) {
-        Queue<Point> queue = new ArrayDeque<>();
         boolean[][] visited = new boolean[n + 1][n + 1];
         PriorityQueue<Target> pq = new PriorityQueue<>();
+        pq.add(new Target(0, start));
 
-        queue.add(start);
-
-        while (!queue.isEmpty()) {
-            Point now = queue.poll();
+        while (!pq.isEmpty()) {
+            Target target = pq.poll();
+            Point now = target.p;
 
             visited[now.r][now.c] = true;
             if (map[now.r][now.c] == CAMP) {
                 int dist = getDistance(now, start);
-                pq.add(new Target(dist, now));
+                return now;
             }
 
             for (int d = 0; d < 4; d++) { // 상,좌,우,하
@@ -193,13 +206,13 @@ public class Main {
                 if (map[nextR][nextC] == BLOCKED) {
                     continue;
                 }
-
-                queue.add(new Point(nextR, nextC));
+                Point next = new Point(nextR, nextC);
+                pq.add(new Target(target.dist + 1, next));
             }
 
         }
 
-        return pq.poll().p;
+        return null;
 
     }
 
@@ -240,7 +253,6 @@ public class Main {
             this.r = r;
             this.c = c;
         }
-
 
     }
 }
