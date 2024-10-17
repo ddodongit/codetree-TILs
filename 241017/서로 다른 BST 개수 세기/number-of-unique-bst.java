@@ -11,15 +11,14 @@ public class Main {
         int n = Integer.parseInt(st.nextToken());
         int[] dp = new int[n+1];   
 
-
+        dp[0]=1;
         for(int i=1; i<=n;i++){
             if(i==1 || i==2) {
                 dp[i]=i;
                 continue;
             }
-            for(int j=0; j<i;j++){
-                if(j==i-1-j) dp[i]+=1;
-                else dp[i]+=dp[j]+dp[i-1-j];
+            for(int j=0;j<i;j++){
+                dp[i]+=dp[j]*dp[i-1-j];
             }
         }
         
