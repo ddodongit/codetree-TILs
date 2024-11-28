@@ -17,6 +17,7 @@ public class Main {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
+        StringBuilder sb = new StringBuilder();
 
         st = new StringTokenizer(br.readLine());
         int q = Integer.parseInt(st.nextToken());
@@ -30,22 +31,24 @@ public class Main {
                     break;
                 case 200:
                     int w_max = Integer.parseInt(st.nextToken());
-                    System.out.println(unload_box(w_max));
+                    sb.append(unload_box(w_max)).append("\n");
                     break;
                 case 300:
                     int r_id = Integer.parseInt(st.nextToken());
-                    System.out.println(remove_box(r_id));
+                    sb.append(remove_box(r_id)).append("\n");
                     break;
                 case 400:
                     int f_id = Integer.parseInt(st.nextToken());
-                    System.out.println(find_box(f_id));
+                    sb.append(find_box(f_id)).append("\n");
                     break;
                 case 500:
                     int b_num = Integer.parseInt(st.nextToken());
-                    System.out.println(breakdown_belt(b_num));
+                    sb.append(breakdown_belt(b_num)).append("\n");
                     break;
             }
         }
+
+        System.out.println(sb);
 
     }
 
