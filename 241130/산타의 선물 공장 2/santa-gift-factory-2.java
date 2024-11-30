@@ -169,7 +169,7 @@ public class Main {
 
     private static int moveBox(int mSrc, int mDst) {
 
-        if (boxCount[mSrc] == 0) {
+        if (tails[mSrc] == null) {
             return boxCount[mDst];
         }
 
