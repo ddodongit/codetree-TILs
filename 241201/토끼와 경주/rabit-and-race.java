@@ -49,21 +49,13 @@ public class Main {
 
     }
 
-    private static void printBestRabbit() {
-
-        PriorityQueue<Rabbit> pq = new PriorityQueue<>(new Comparator<Rabbit>() {
-
-            @Override
-            public Long compare(Rabbit o1, Rabbit o2) {
-                return Long.compare(o2.score, o1.score);
-            }
-        });
-
+      private static void printBestRabbit() {
+        long maxScore = Long.MIN_VALUE;
         for (Rabbit rabbit : allRabbits.values()) {
-            pq.add(rabbit);
+            maxScore = Math.max(maxScore, rabbit.score);
         }
 
-        System.out.println(pq.poll().score);
+        System.out.println(maxScore);
     }
 
     private static void changeDist(int pid, int L) {
