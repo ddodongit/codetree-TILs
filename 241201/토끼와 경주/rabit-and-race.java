@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.TreeSet;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
@@ -50,37 +49,38 @@ public class Main {
     }
 
     private static void printBestRabbit() {
-        TreeSet<Long> ts = new TreeSet<>();
+        PriorityQueue<Long> pq = new PriorityQueue<>();
 
         for (Rabbit rabbit : allRabbits.values()) {
-            ts.add(rabbit.score);
+            pq.add(-rabbit.score);
         }
-        System.out.println(ts.last());
+        System.out.println(-pq.poll());
     }
 
     private static void changeDist(int pid, int L) {
         allRabbits.get(pid).dist *= L;
     }
-
+    
     private static void play(int K, int S) {
 
         HashSet<Integer> pickedRabbits = new HashSet<>();
-
+        int total = 0;
+        
         for (int k = 0; k < K; k++) {
             Rabbit rabbit = jumpPQ.poll();
             pickedRabbits.add(rabbit.pid);
 
             moveToNextPos(rabbit);
 
-            for (int id : allRabbits.keySet()) {
-                if (id == rabbit.pid) {
-                    continue;
-                }
-                allRabbits.get(id).score += rabbit.rcSum;
-            }
+            rabbit.score -= rabbit.rcSum;
+            total += rabbit.rcSum;
 
             rabbit.totalJump += 1;
             jumpPQ.add(rabbit);
+        }
+
+        for (int id : allRabbits.keySet()) {
+            allRabbits.get(id).score += total;
         }
 
         PriorityQueue<Rabbit> pq = new PriorityQueue<>(new Comparator<Rabbit>() {
@@ -107,6 +107,7 @@ public class Main {
         bestRabbit.score += S;
 
     }
+
 
     private static void moveToNextPos(Rabbit rabbit) {
 
