@@ -162,6 +162,13 @@ public class Main {
             if (srcSecond != null) {
                 srcSecond.prev = belts[mSrc];
             }
+
+            if (boxCount[mDst] == 1) {
+                tails[mDst] = srcBox;
+            }
+            if (boxCount[mSrc] == 1) {
+                tails[mSrc] = dstBox;
+            }
         }
 
         return boxCount[mDst];
@@ -169,7 +176,7 @@ public class Main {
 
     private static int moveBox(int mSrc, int mDst) {
 
-        if (tails[mSrc] == null) {
+        if (boxCount[mSrc] == 0) {
             return boxCount[mDst];
         }
 
