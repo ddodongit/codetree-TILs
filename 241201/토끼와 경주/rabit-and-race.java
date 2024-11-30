@@ -48,15 +48,13 @@ public class Main {
 
     }
 
-      private static void printBestRabbit() {
-        long maxScore = 0;
-        for (Rabbit rabbit : allRabbits.values()) {
-            if(maxScore < rabbit.score){
-                maxScore = rabbit.score;
-            }
-        }
+    private static void printBestRabbit() {
+        PriorityQueue<Long> pq = new PriorityQueue<>();
 
-        System.out.println(maxScore);
+        for (Rabbit rabbit : allRabbits.values()) {
+            pq.add(-rabbit.score);
+        }
+        System.out.println(-pq.poll());
     }
 
     private static void changeDist(int pid, int L) {
