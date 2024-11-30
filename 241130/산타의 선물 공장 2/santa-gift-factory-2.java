@@ -168,8 +168,9 @@ public class Main {
         }
 
         tails[mSrc].next = belts[mDst];
-        belts[mDst].prev = tails[mSrc];
-
+        if (belts[mDst] != null) {
+            belts[mDst].prev = tails[mSrc];
+        }
         belts[mDst] = belts[mSrc];
 
         belts[mSrc] = null;
