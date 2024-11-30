@@ -53,9 +53,9 @@ public class Main {
         TreeSet<Long> ts = new TreeSet<>();
 
         for (Rabbit rabbit : allRabbits.values()) {
-            ts.add(-rabbit.score);
+            ts.add(rabbit.score);
         }
-        System.out.println(-ts.first());
+        System.out.println(ts.last());
     }
 
     private static void changeDist(int pid, int L) {
