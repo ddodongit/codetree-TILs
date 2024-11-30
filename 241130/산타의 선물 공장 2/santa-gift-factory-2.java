@@ -123,8 +123,8 @@ public class Main {
         if (srcBox == null) {
             belts[mSrc] = dstBox;
             belts[mDst] = dstBox.next;
-            dstBox.next = null;
             belts[mDst].prev = null;
+            dstBox.next = null;
 
             tails[mSrc] = dstBox;
 
@@ -133,8 +133,8 @@ public class Main {
         } else if (dstBox == null) {
             belts[mDst] = srcBox;
             belts[mSrc] = srcBox.next;
-            srcBox.next = null;
             belts[mSrc].prev = null;
+            srcBox.next = null;
 
             tails[mDst] = srcBox;
 
