@@ -93,7 +93,9 @@ public class Main {
         }
 
         belts[mSrc] = endBox.next;
-        belts[mSrc].prev = null;
+        if (belts[mSrc] != null) {
+            belts[mSrc].prev = null;
+        }
 
         endBox.next = belts[mDst];
 
@@ -125,7 +127,7 @@ public class Main {
             belts[mDst] = dstBox.next;
             if (belts[mDst] != null) {
                 belts[mDst].prev = null;
-                dstBox.next = null;
+                belts[mSrc].next = null;
             }
 
             tails[mSrc] = dstBox;
@@ -137,7 +139,7 @@ public class Main {
             belts[mSrc] = srcBox.next;
             if (belts[mSrc] != null) {
                 belts[mSrc].prev = null;
-                srcBox.next = null;
+                belts[mDst].next = null;
             }
 
             tails[mDst] = srcBox;
@@ -171,12 +173,11 @@ public class Main {
             return boxCount[mDst];
         }
 
-        if (tails[mSrc] != null) {
-            tails[mSrc].next = belts[mDst];
-        }
+        tails[mSrc].next = belts[mDst];
         if (belts[mDst] != null) {
             belts[mDst].prev = tails[mSrc];
         }
+
         belts[mDst] = belts[mSrc];
 
         belts[mSrc] = null;
