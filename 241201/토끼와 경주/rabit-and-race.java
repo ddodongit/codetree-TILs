@@ -12,7 +12,6 @@ public class Main {
 
     final static int[] dr = {-1, 0, 1, 0}, dc = {0, 1, 0, -1};
     static int N, M, P;
-    static ArrayList<Rabbit>[][] map;
     static HashMap<Integer, Rabbit> allRabbits;
     static PriorityQueue<Rabbit> jumpPQ;
 
@@ -50,9 +49,11 @@ public class Main {
     }
 
       private static void printBestRabbit() {
-        long maxScore = Long.MIN_VALUE;
+        long maxScore = 0;
         for (Rabbit rabbit : allRabbits.values()) {
-            maxScore = Math.max(maxScore, rabbit.score);
+            if(maxScore < rabbit.score){
+                maxScore = rabbit.score;
+            }
         }
 
         System.out.println(maxScore);
@@ -135,8 +136,6 @@ public class Main {
             }
         }
 
-        map[rabbit.r][rabbit.c].remove(rabbit);
-        map[maxR][maxC].add(rabbit);
         rabbit.r = maxR;
         rabbit.c = maxC;
         rabbit.rcSum = maxSum + 2;
@@ -178,12 +177,6 @@ public class Main {
         P = Integer.parseInt(st.nextToken());
 
         allRabbits = new HashMap<>();
-        map = new ArrayList[N][M];
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                map[i][j] = new ArrayList<>();
-            }
-        }
 
         jumpPQ = new PriorityQueue<>(new Comparator<Rabbit>() {
             @Override
@@ -210,7 +203,6 @@ public class Main {
 
             Rabbit newRabbit = new Rabbit(pid, dist, 0, 0, 0, 2, 0);
             allRabbits.put(pid, newRabbit);
-            map[0][0].add(newRabbit);
             jumpPQ.add(newRabbit);
         }
 
