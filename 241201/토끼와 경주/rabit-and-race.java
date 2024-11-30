@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.TreeSet;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
@@ -49,12 +50,12 @@ public class Main {
     }
 
     private static void printBestRabbit() {
-        PriorityQueue<Long> pq = new PriorityQueue<>();
+        TreeSet<Long> ts = new TreeSet<>();
 
         for (Rabbit rabbit : allRabbits.values()) {
-            pq.add(-rabbit.score);
+            ts.add(-rabbit.score);
         }
-        System.out.println(-pq.poll());
+        System.out.println(-ts.first());
     }
 
     private static void changeDist(int pid, int L) {
