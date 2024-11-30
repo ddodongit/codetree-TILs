@@ -54,7 +54,7 @@ public class Main {
         PriorityQueue<Rabbit> pq = new PriorityQueue<>(new Comparator<Rabbit>() {
 
             @Override
-            public int compare(Rabbit o1, Rabbit o2) {
+            public Long compare(Rabbit o1, Rabbit o2) {
                 return Long.compare(o2.score, o1.score);
             }
         });
