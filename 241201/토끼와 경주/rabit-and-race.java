@@ -55,7 +55,7 @@ public class Main {
 
             @Override
             public int compare(Rabbit o1, Rabbit o2) {
-                return Integer.compare(o2.score, o1.score);
+                return Long.compare(o2.score, o1.score);
             }
         });
 
@@ -226,9 +226,10 @@ public class Main {
 
     static class Rabbit {
 
-        int pid, dist, totalJump, r, c, rcSum, score;
+        int pid, dist, totalJump, r, c, rcSum;
+        long score;
 
-        public Rabbit(int pid, int dist, int totalJump, int r, int c, int rcSum, int score) {
+        public Rabbit(int pid, int dist, int totalJump, int r, int c, int rcSum, long score) {
             this.pid = pid;
             this.dist = dist;
             this.totalJump = totalJump;
@@ -237,5 +238,6 @@ public class Main {
             this.rcSum = rcSum;
             this.score = score;
         }
+
     }
 }
