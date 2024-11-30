@@ -128,6 +128,8 @@ public class Main {
             if (belts[mDst] != null) {
                 belts[mDst].prev = null;
                 belts[mSrc].next = null;
+            } else {
+                tails[mDst] = null;
             }
 
             tails[mSrc] = dstBox;
