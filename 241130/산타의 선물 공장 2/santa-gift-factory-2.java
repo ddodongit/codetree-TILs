@@ -140,6 +140,8 @@ public class Main {
             if (belts[mSrc] != null) {
                 belts[mSrc].prev = null;
                 belts[mDst].next = null;
+            } else {
+                tails[mSrc] = null;
             }
 
             tails[mDst] = srcBox;
@@ -180,10 +182,12 @@ public class Main {
             return boxCount[mDst];
         }
 
-        tails[mSrc].next = belts[mDst];
         if (belts[mDst] != null) {
             belts[mDst].prev = tails[mSrc];
+        } else {
+            tails[mDst] = tails[mSrc];
         }
+        tails[mSrc].next = belts[mDst];
 
         belts[mDst] = belts[mSrc];
 
