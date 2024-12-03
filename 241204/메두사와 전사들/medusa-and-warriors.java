@@ -105,7 +105,7 @@ public class Main {
 		soldierMap[s_r][s_c].clear();
 	}
 
-	private static int moveSoldiers() {
+private static int moveSoldiers() {
 
 		int count = 0;
 
@@ -145,11 +145,12 @@ public class Main {
 			if (flag) {
 				int tmpR = soldier.r + dr[dir];
 				int tmpC = soldier.c + dc[dir];
+				dir = -1;
 				count++;
 				flag = false;
 
 				// second move
-				for (int d = 2; d < 5; d++) {
+				for (int d = 2; d <= 5; d++) {
 					int nextR = tmpR + dr[d % 4];
 					int nextC = tmpC + dc[d % 4];
 
@@ -164,15 +165,16 @@ public class Main {
 
 					if (dist < minDist) {
 						minDist = dist;
-						tmpR = nextR;
-						tmpC = nextC;
+						dir = d % 4;
 						flag = true;
 					}
 				}
+				soldierMap[soldier.r][soldier.c].remove(soldier);
 				if (flag) {
 					count++;
+					tmpR += dr[dir];
+					tmpC += dc[dir];
 				}
-				soldierMap[soldier.r][soldier.c].remove(soldier);
 				soldier.r = tmpR;
 				soldier.c = tmpC;
 				soldierMap[soldier.r][soldier.c].add(soldier);
@@ -181,6 +183,7 @@ public class Main {
 
 		return count;
 	}
+
 
 	private static void checkVisible() {
 		int maxCnt = 0;
