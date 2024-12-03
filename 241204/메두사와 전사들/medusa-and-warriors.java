@@ -55,7 +55,7 @@ public class Main {
 			st = new StringTokenizer(br.readLine());
 			for (int j = 0; j < N; j++) {
 				int val = Integer.parseInt(st.nextToken());
-				medusaMap[i][j] = val == 1 ? -1 : val;
+				medusaMap[i][j] = val == 1 ? Integer.MAX_VALUE : -1;
 			}
 		}
 
@@ -105,7 +105,7 @@ public class Main {
 		soldierMap[s_r][s_c].clear();
 	}
 
-private static int moveSoldiers() {
+	private static int moveSoldiers() {
 
 		int count = 0;
 
@@ -184,7 +184,6 @@ private static int moveSoldiers() {
 		return count;
 	}
 
-
 	private static void checkVisible() {
 		int maxCnt = 0;
 		int dir = -1;
@@ -200,9 +199,11 @@ private static int moveSoldiers() {
 				sightMap = invisibleMap;
 			}
 		}
+
 		for (Integer id : rockSoldiers) {
 			allSoldiers.get(id).isRock = true;
 		}
+
 	}
 
 	private static int countSoldiers(int dir, HashSet<Integer> rock, int[][] invisibleMap) {
@@ -390,7 +391,7 @@ private static int moveSoldiers() {
 			if (isOutOfBounds(nextR, nextC))
 				continue;
 
-			if (medusaMap[nextR][nextC] == -1)
+			if (medusaMap[nextR][nextC] == Integer.MAX_VALUE)
 				continue;
 
 			if (medusaMap[nextR][nextC] < minDist) {
@@ -409,15 +410,14 @@ private static int moveSoldiers() {
 	private static boolean bfsMedusa() {
 
 		Queue<Integer> queue = new ArrayDeque<>();
-		boolean[][] visited = new boolean[N][N];
 
 		queue.add(e_r);
 		queue.add(e_c);
+		medusaMap[e_r][e_c] = 0;
 
 		while (!queue.isEmpty()) {
 			int nowR = queue.poll();
 			int nowC = queue.poll();
-			visited[nowR][nowC] = true;
 
 			for (int d = 0; d < 4; d++) {
 				int nextR = nowR + dr[d];
@@ -425,11 +425,8 @@ private static int moveSoldiers() {
 
 				if (isOutOfBounds(nextR, nextC))
 					continue;
-				if (visited[nextR][nextC]) {
-					continue;
-				}
 
-				if (medusaMap[nextR][nextC] == -1)
+				if (medusaMap[nextR][nextC] != -1)
 					continue;
 
 				medusaMap[nextR][nextC] = medusaMap[nowR][nowC] + 1;
