@@ -436,7 +436,7 @@ public class Main {
 			}
 		}
 
-		return medusaMap[s_r][s_c] == -1;
+		return medusaMap[s_r][s_c] != -1;
 	}
 
 	private static int getDistance(int fromR, int fromC, int toR, int toC) {
