@@ -436,7 +436,7 @@ public class Main {
 			}
 		}
 
-		return medusaMap[s_r][s_c] != 0;
+		return medusaMap[s_r][s_c] != Integer.MAX_VALUE;
 	}
 
 	private static int getDistance(int fromR, int fromC, int toR, int toC) {
