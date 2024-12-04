@@ -66,7 +66,7 @@ public class Main {
 		}
 
 		// time abnormality
-		timeAbnormal = new Point[F + 1];
+			timeAbnormal = new Point[F + 1];
 		spreadDir = new int[F + 1];
 		spreadV = new int[F + 1];
 		for (int i = 1; i <= F; i++) {
@@ -75,15 +75,20 @@ public class Main {
 			int c = Integer.parseInt(st.nextToken());
 			int d = Integer.parseInt(st.nextToken());
 			int v = Integer.parseInt(st.nextToken());
-
 			timeAbnormal[i] = new Point(r, c);
 			spreadDir[i] = d;
-			if (bottom[r + dr[d]][c + dc[d]] != EMPTY) {
-				v = -1;
-			}
 			spreadV[i] = v;
 			bottom[r][c] = 1;
+
+			if (isOutOfBounds(r + dr[d], c + dc[d], N)) {
+				continue;
+			}
+
+			if (bottom[r + dr[d]][c + dc[d]] != EMPTY) {
+				spreadV[i] = -1;
+			}
 		}
+
 
 		// find start r,c
 		findStartPos(wallBottom.r, wallBottom.c);
