@@ -107,11 +107,8 @@ public class Main {
 		initBottomMap();
 		int moveDist = bottomMap[machine.r][machine.c];
 		int count = 0;
+
 		while (true) {
-			if (bottom[exit.r][exit.c] != EMPTY) {
-				System.out.println(-1);
-				return;
-			}
 			if (machine.r == exit.r && machine.c == exit.c) {
 				break;
 			}
@@ -129,7 +126,9 @@ public class Main {
 						}
 					}
 				}
-
+			}
+            if (machine.r == exit.r && machine.c == exit.c) {
+				break;
 			}
 			moveDist = moveMachine();
 			count++;
@@ -155,7 +154,7 @@ public class Main {
 				continue;
 			}
 
-			if (bottom[nextR][nextC] != EMPTY) {
+			if (nextR != exit.r && nextC != exit.c && bottom[nextR][nextC] != EMPTY) {
 				continue;
 			}
 
@@ -418,7 +417,6 @@ public class Main {
 
 	}
 
-
 	private static boolean isOutOfBounds(int i, int j, int len) {
 
 		return i < 0 || i >= len || j < 0 || j >= len;
@@ -432,7 +430,6 @@ public class Main {
 			this.r = r;
 			this.c = c;
 		}
-
 
 	}
 }
