@@ -106,8 +106,10 @@ public class Main {
 				nowGolrem.centerC -= 1;
 
 				// change exit dir
-				nowGolrem.exitDir = (nowGolrem.exitDir - 1) % 4;
-
+	            nowGolrem.exitDir -= 1;
+				if (nowGolrem.exitDir < 0) {
+					nowGolrem.exitDir = 3;
+				}
 				continue;
 			} else {
 				if (isAvailable(nowGolrem.centerR, nowGolrem.centerC, EAST)) {
