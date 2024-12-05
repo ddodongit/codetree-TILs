@@ -137,24 +137,20 @@ public class Main {
 				int leftC = centerC - 1;
 
 				if (centerR - 1 < 1) {
-					if (isOutOfBounds(centerR, leftC - 1) // center
-							|| isOutOfBounds(centerR + 1, leftC)) { // bottom
+					if (isOutOfBounds(centerR + 1, leftC)) { // bottom
 						return false;
 					}
 
-					if (map[centerR][leftC - 1] != 0 // center
-							|| map[centerR + 1][leftC] != 0) { // bottom
+					if (map[centerR + 1][leftC] != 0) { // bottom
 						return false;
 					}
 				} else {
 					if (centerR - 1 < 1) {
-						if (isOutOfBounds(centerR, leftC - 1) // center
-								|| isOutOfBounds(centerR + 1, leftC)) { // bottom
+						if (isOutOfBounds(centerR + 1, leftC)) { // bottom
 							return false;
 						}
 
-						if (map[centerR][leftC - 1] != 0 // center
-								|| map[centerR + 1][leftC] != 0) { // bottom
+						if (map[centerR + 1][leftC] != 0) { // bottom
 							return false;
 						}
 					} else {
