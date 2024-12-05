@@ -133,10 +133,13 @@ public class Main {
 	private static boolean isAvailable(int centerR, int centerC, int moveDir) {
 
 		if (moveDir != SOUTH) {
+			if (centerR == -1) {
+				return true;
+			}
 			if (moveDir == WEST) {
 				int leftC = centerC - 1;
 
-				if (centerR - 1 < 1) {
+				if (centerR == 0) {
 					if (isOutOfBounds(centerR + 1, leftC)) { // bottom
 						return false;
 					}
@@ -144,13 +147,26 @@ public class Main {
 					if (map[centerR + 1][leftC] != 0) { // bottom
 						return false;
 					}
+
+				} else if (centerR == 1) {
+					if (isOutOfBounds(centerR, leftC - 1) // center
+							|| isOutOfBounds(centerR + 1, leftC)) { // bottom
+						return false;
+					}
+
+					if (map[centerR][leftC - 1] != 0 // center
+							|| map[centerR + 1][leftC] != 0) { // bottom
+						return false;
+					}
 				} else {
 					if (centerR - 1 < 1) {
-						if (isOutOfBounds(centerR + 1, leftC)) { // bottom
+						if (isOutOfBounds(centerR, leftC - 1) // center
+								|| isOutOfBounds(centerR + 1, leftC)) { // bottom
 							return false;
 						}
 
-						if (map[centerR + 1][leftC] != 0) { // bottom
+						if (map[centerR][leftC - 1] != 0 // center
+								|| map[centerR + 1][leftC] != 0) { // bottom
 							return false;
 						}
 					} else {
@@ -169,17 +185,37 @@ public class Main {
 				}
 			} else { // EAST
 				int rightC = centerC + 1;
+				if (centerR == 0) {
+					if (isOutOfBounds(centerR + 1, rightC)) { // bottom
+						return false;
+					}
 
-				if (isOutOfBounds(centerR - 1, rightC) // top
-						|| isOutOfBounds(centerR, rightC + 1) // center
-						|| isOutOfBounds(centerR + 1, rightC)) { // bottom
-					return false;
-				}
+					if (map[centerR + 1][rightC] != 0) { // bottom
+						return false;
+					}
 
-				if (map[centerR - 1][rightC] != 0 // top
-						|| map[centerR][rightC + 1] != 0 // center
-						|| map[centerR + 1][rightC] != 0) { // bottom
-					return false;
+				} else if (centerR == 1) {
+					if (isOutOfBounds(centerR, rightC + 1) // center
+							|| isOutOfBounds(centerR + 1, rightC)) { // bottom
+						return false;
+					}
+
+					if (map[centerR][rightC + 1] != 0 // center
+							|| map[centerR + 1][rightC] != 0) { // bottom
+						return false;
+					}
+				} else {
+					if (isOutOfBounds(centerR - 1, rightC) // top
+							|| isOutOfBounds(centerR, rightC + 1) // center
+							|| isOutOfBounds(centerR + 1, rightC)) { // bottom
+						return false;
+					}
+
+					if (map[centerR - 1][rightC] != 0 // top
+							|| map[centerR][rightC + 1] != 0 // center
+							|| map[centerR + 1][rightC] != 0) { // bottom
+						return false;
+					}
 				}
 			}
 
