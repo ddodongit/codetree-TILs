@@ -54,7 +54,7 @@ public class Main {
 			if (total == 0) {
 				break;
 			}
-			sb.append(total +"\n");
+			sb.append(total +" ");
 		}
 
 		System.out.print(sb);
