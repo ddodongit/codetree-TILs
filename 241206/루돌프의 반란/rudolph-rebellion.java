@@ -65,7 +65,7 @@ public class Main {
 			for (Integer id : allSanta.keySet()) {
 				scores[id] += 1;
 			}
-
+		
 			HashSet<Integer> done = faintedSanta.remove(K);
 			if (done != null) {
 				for (Integer id : done) {
@@ -73,9 +73,9 @@ public class Main {
 				}
 			}
 		}
-        
-        for(int i=1; i<= P; i++) {
-			System.out.print(scores[i]+" ");
+
+		for (int i = 1; i <= P; i++) {
+			System.out.print(scores[i] + " ");
 		}
 
 	}
@@ -112,16 +112,22 @@ public class Main {
 				}
 			}
 
+			if (dir == 0) {
+				continue;
+			}
+
 			santaMap[santa.r][santa.c] = 0;
 			santa.r += dr[dir];
 			santa.c += dc[dir];
-			santaMap[santa.r][santa.c] = santa.id;
 
 			if (rudolph.r == santa.r && rudolph.c == santa.c) {
 				// opposite dir
 				dir = (dir + 4) % 8;
 				collide(santa, dir, D);
+			} else {
+				santaMap[santa.r][santa.c] = santa.id;
 			}
+
 		}
 
 	}
@@ -138,8 +144,8 @@ public class Main {
 
 		// collision
 		if (santaMap[rudolph.r][rudolph.c] != 0) {
+			santaMap[nearSanta.r][nearSanta.c] = 0;
 			collide(nearSanta, moveDir, C);
-
 		}
 
 	}
@@ -161,7 +167,7 @@ public class Main {
 		faintedSanta.computeIfAbsent(K + 1, k -> new HashSet<>()).add(santa.id);
 
 		if (santaMap[nextR][nextC] != 0) {
-			interact(santa, nextR, nextC, dir);
+			interact(santa, nextR, nextC, dir, score);
 		}
 
 		else {
@@ -172,7 +178,7 @@ public class Main {
 
 	}
 
-	private static void interact(Point nowSanta, int nextR, int nextC, int dir) {
+	private static void interact(Point nowSanta, int nextR, int nextC, int dir, int score) {
 
 		while (true) {
 			int id = santaMap[nextR][nextC];
@@ -182,10 +188,11 @@ public class Main {
 			nowSanta.r = nextR;
 			nowSanta.c = nextC;
 
-			nextR += dr[dir];
-			nextC += dc[dir];
+			nextR += dr[dir] * score;
+			nextC += dc[dir] * score;
 
 			if (isOutOfBounds(nextR, nextC)) {
+				allSanta.remove(otherSanta.id);
 				break;
 			}
 
@@ -222,8 +229,21 @@ public class Main {
 
 		for (Integer id : allSanta.keySet()) {
 			Point santa = allSanta.get(id);
-			int dist = getDistance(rudolph.r, rudolph.c, santa.r, santa.c);
-			santa.dist = dist;
+			int minDist = Integer.MAX_VALUE;
+
+			for (int d = 0; d < 8; d++) {
+				int nextR = santa.r + dr[d];
+				int nextC = santa.c + dc[d];
+				if (isOutOfBounds(nextR, nextC)) {
+					continue;
+				}
+
+				int dist = getDistance(rudolph.r, rudolph.c, santa.r, santa.c);
+				if (minDist > dist) {
+					minDist = dist;
+				}
+			}
+			santa.dist = minDist;
 			pq.add(santa);
 		}
 
