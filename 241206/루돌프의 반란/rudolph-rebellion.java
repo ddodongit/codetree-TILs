@@ -13,8 +13,7 @@ public class Main {
 	static final int[] dr = { 0, -1, -1, 0, 1, 1, 1, 0, -1 }, dc = { 0, 0, 1, 1, 1, 0, -1, -1, -1 };
 	static int N, M, P, C, D, K;
 	static int[][] santaMap;
-	static boolean[] isFainted;
-	static HashMap<Integer, HashSet<Integer>> faintedSanta; // < k turn, hs<id> >
+	static int[] isFainted;
 	static Point rudolph;
 	static HashMap<Integer, Point> allSanta;
 	static int[] scores;
@@ -38,8 +37,7 @@ public class Main {
 
 		santaMap = new int[N + 1][N + 1];
 		allSanta = new HashMap<>();
-		isFainted = new boolean[P + 1];
-		faintedSanta = new HashMap<>();
+		isFainted = new int[P + 1];
 		scores = new int[P + 1];
 		for (int p = 1; p <= P; p++) {
 			st = new StringTokenizer(br.readLine());
@@ -65,19 +63,19 @@ public class Main {
 			for (Integer id : allSanta.keySet()) {
 				scores[id] += 1;
 			}
-		
-			HashSet<Integer> done = faintedSanta.remove(K);
-			if (done != null) {
-				for (Integer id : done) {
-					isFainted[id] = false;
+
+			for (int i = 1; i <= P; i++) {
+				if (isFainted[i] == K) {
+					isFainted[i] = 0;
 				}
 			}
+
 		}
+
 
 		for (int i = 1; i <= P; i++) {
 			System.out.print(scores[i] + " ");
 		}
-
 	}
 
 	private static void moveAllSanta() {
@@ -86,7 +84,7 @@ public class Main {
 			if (!allSanta.containsKey(id)) {
 				continue;
 			}
-			if (isFainted[id]) {
+			if (isFainted[id] != 0) {
 				continue;
 			}
 
@@ -151,7 +149,6 @@ public class Main {
 	}
 
 	private static void collide(Point santa, int dir, int score) {
-
 		scores[santa.id] += score;
 
 		int nextR = santa.r + dr[dir] * score;
@@ -163,8 +160,7 @@ public class Main {
 		}
 
 		// faint
-		isFainted[santa.id] = true;
-		faintedSanta.computeIfAbsent(K + 1, k -> new HashSet<>()).add(santa.id);
+		isFainted[santa.id] = K + 1;
 
 		if (santaMap[nextR][nextC] != 0) {
 			interact(santa, nextR, nextC, dir, score);
@@ -192,7 +188,7 @@ public class Main {
 			nextC += dc[dir];
 
 			if (isOutOfBounds(nextR, nextC)) {
-				allSanta.remove(otherSanta.id);
+				allSanta.remove(id);
 				break;
 			}
 
@@ -281,7 +277,7 @@ public class Main {
 	}
 
 	private static int getDistance(int fromR, int fromC, int toR, int toC) {
-		return (int) (Math.pow(fromR - toR, 2) + Math.pow(fromC - toC, 2));
+		return (int) (Math.pow(fromR - toR, 2)) + (int) (Math.pow(fromC - toC, 2));
 	}
 
 	private static boolean isOutOfBounds(int r, int c) {
