@@ -138,14 +138,14 @@ public class Main {
 				bestMap = copyMap(tmpMap);
 				allPieces = pieces;
 			} else if (angle == minAngle) {
-				if (nowR < centerR) {
+				if (nowC < centerC) {
 					centerR = nowR;
 					centerC = nowC;
 					bestMap = copyMap(tmpMap);
 					allPieces = pieces;
-				} else if (nowR == centerR) {
-					if (nowC < centerC) {
-						centerC = nowC;
+				} else if (nowC == centerC) {
+					if (nowR < centerR) {
+						centerR = nowR;
 						bestMap = copyMap(tmpMap);
 						allPieces = pieces;
 					}
