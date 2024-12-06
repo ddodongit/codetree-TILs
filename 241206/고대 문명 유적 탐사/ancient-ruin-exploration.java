@@ -19,6 +19,7 @@ public class Main {
 
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
+		StringBuilder sb = new StringBuilder();
 
 		st = new StringTokenizer(br.readLine());
 		K = Integer.parseInt(st.nextToken());
@@ -53,10 +54,10 @@ public class Main {
 			if (total == 0) {
 				break;
 			}
-
-			System.out.print(total + " ");
+			sb.append(total +"\n");
 		}
 
+		System.out.print(sb);
 	}
 
 	private static void fillBlank() {
