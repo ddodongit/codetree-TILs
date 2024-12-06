@@ -6,13 +6,14 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 
 public class Main {
 	static final int[] dr = { -1, 0, 1, 0 }, dc = { 0, 1, 0, -1 };
 	static int[][] map, bestMap;
 	static int K, M, centerR, centerC, maxCnt, minAngle, total;
 	static Queue<Integer> wallNumbers;
-	static PriorityQueue<Point> allPieces;
+	static TreeSet<Point> allPieces;
 
 	public static void main(String[] args) throws IOException {
 
@@ -42,8 +43,8 @@ public class Main {
 			explore();
 			while (true) {
 				fillBlank();
-				
-				PriorityQueue<Point> pieces = getPieces(map);
+
+				TreeSet<Point> pieces = getPieces(map);
 				allPieces = pieces;
 				if (pieces.size() == 0) {
 					break;
@@ -61,7 +62,7 @@ public class Main {
 	private static void fillBlank() {
 		total += allPieces.size();
 		while (!allPieces.isEmpty()) {
-			Point p = allPieces.poll();
+			Point p = allPieces.pollFirst();
 			int num = wallNumbers.poll();
 			map[p.r][p.c] = num;
 		}
@@ -119,7 +120,7 @@ public class Main {
 			}
 		}
 
-		PriorityQueue<Point> pieces = getPieces(tmpMap);
+		TreeSet<Point> pieces = getPieces(tmpMap);
 		int cnt = pieces.size();
 
 		if (maxCnt < cnt) {
@@ -154,18 +155,17 @@ public class Main {
 
 	}
 
-	private static PriorityQueue<Point> getPieces(int[][] arr) {
+	private static TreeSet<Point> getPieces(int[][] arr) {
 
-		boolean[][] visited = new boolean[5][5];
-		PriorityQueue<Point> pieces = new PriorityQueue<>();
+		TreeSet<Point> pieces = new TreeSet<>();
+		boolean[][] selected = new boolean[5][5];
 
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 5; j++) {
-				if (visited[i][j]) {
+				if (selected[i][j]) {
 					continue;
 				}
-
-				bfs(i, j, visited, arr, pieces);
+				bfs(i, j, arr, selected, pieces);
 
 			}
 		}
@@ -173,8 +173,9 @@ public class Main {
 		return pieces;
 	}
 
-	private static void bfs(int startR, int startC, boolean[][] visited, int[][] arr, PriorityQueue<Point> pieces) {
+	private static void bfs(int startR, int startC, int[][] arr, boolean[][] selected, TreeSet<Point> pieces) {
 
+		boolean[][] visited = new boolean[5][5];
 		Queue<Point> pos = new LinkedList<>();
 		Queue<Integer> queue = new LinkedList<>();
 		queue.add(startR);
@@ -198,6 +199,10 @@ public class Main {
 					continue;
 				}
 
+				if (selected[nextR][nextC]) {
+					continue;
+				}
+
 				if (arr[startR][startC] != arr[nextR][nextC]) {
 					continue;
 				}
@@ -208,7 +213,11 @@ public class Main {
 		}
 
 		if (pos.size() >= 3) {
-			pieces.addAll(pos);
+			while (!pos.isEmpty()) {
+				Point p = pos.poll();
+				selected[p.r][p.c] = true;
+				pieces.add(p);
+			}
 		}
 
 	}
@@ -234,6 +243,6 @@ public class Main {
 			}
 			return Integer.compare(this.c, o.c);
 		}
-    }
+	}
 
 	}
