@@ -188,8 +188,8 @@ public class Main {
 			nowSanta.r = nextR;
 			nowSanta.c = nextC;
 
-			nextR += dr[dir] * score;
-			nextC += dc[dir] * score;
+			nextR += dr[dir];
+			nextC += dc[dir];
 
 			if (isOutOfBounds(nextR, nextC)) {
 				allSanta.remove(otherSanta.id);
