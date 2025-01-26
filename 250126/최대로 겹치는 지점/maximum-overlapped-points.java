@@ -11,7 +11,7 @@ public class Main {
         int n = Integer.parseInt(st.nextToken());
 
 
-        int[] checked = new int[100];
+        int[] checked = new int[101];
         int maxX=0;
         for(int i=0; i<n; i++){
             st = new StringTokenizer(br.readLine());
