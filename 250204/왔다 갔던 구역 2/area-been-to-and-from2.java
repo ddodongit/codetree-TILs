@@ -13,18 +13,28 @@ public class Main {
         int N = Integer.parseInt(br.readLine());
         int min = Integer.MAX_VALUE;
         int max = Integer.MIN_VALUE;
+
+
         for(int i=0; i<N; i++){
             st = new StringTokenizer(br.readLine());
             int offset = Integer.parseInt(st.nextToken());
             char ch = st.nextToken().charAt(0);
 
-            int dir = ch == 'R' ? 1 : -1;
-            for(int j=0; j<=offset; j++){
-                if(j<offset) arr[now]++;
-                min = Integer.min(now, min);
-                max = Integer.max(now, max);
-                now += dir;
+            if(ch == 'R'){
+                for(int j=0; j< offset; j++){
+                    arr[now++]++;
+                    min = Integer.min(now, min);
+                    max = Integer.max(now, max);
+                }
             }
+            else{
+                for(int j=0; j< offset; j++){
+                    arr[--now]++;
+                    min = Integer.min(now, min);
+                    max = Integer.max(now, max);
+                }
+            }
+
         }
         int count = 0;
         for(int i=min; i<=max; i++){
