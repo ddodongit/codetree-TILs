@@ -19,8 +19,8 @@ public class Main {
             char ch = st.nextToken().charAt(0);
 
             int dir = ch == 'R' ? 1 : -1;
-            for(int j=0; j<offset; j++){
-                arr[now]++;
+            for(int j=0; j<=offset; j++){
+                if(j<offset) arr[now]++;
                 min = Integer.min(now, min);
                 max = Integer.max(now, max);
                 now += dir;
